@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book Your Stay — Kitonga Garden Resort</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Jost:wght@300;400;500;600&family=Jost:ital,wght@1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:     #1c1c18;
+  --forest:  #1e3a2f;
+  --moss:    #2e5c42;
+  --fern:    #4a8060;
+  --sage:    #7aaa8a;
+  --mist:    #b8cebc;
+  --cream:   #f7f3ec;
+  --warm:    #ede7da;
+  --parchment: #f0e9d8;
+  --gold:    #c8974a;
+  --amber:   #e4b36a;
+  --clay:    #b5603c;
+  --sand:    #d4b896;
+  --white:   #fff;
+  --shadow:  rgba(28,28,24,0.12);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Jost', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+/* ── NOISE OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+}
+
+/* ── NAV ── */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 0 48px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(247,243,236,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(200,151,74,0.2);
+}
+
+.nav-logo {
+  display: flex; align-items: center; gap: 12px;
+  text-decoration: none;
+}
+.nav-logo-icon {
+  width: 36px; height: 36px;
+  background: var(--forest);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px;
+}
+.nav-logo-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--forest);
+  letter-spacing: 0.3px;
+}
+
+.nav-links {
+  display: flex; gap: 32px; list-style: none;
+}
+.nav-links a {
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--ink);
+  opacity: 0.65;
+  transition: opacity 0.2s;
+}
+.nav-links a:hover { opacity: 1; }
+.nav-links a.active { opacity: 1; color: var(--forest); }
+
+.nav-cta {
+  background: var(--forest);
+  color: var(--cream);
+  border: none;
+  padding: 10px 22px;
+  border-radius: 4px;
+  font-family: 'Jost', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.nav-cta:hover { background: var(--moss); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 80px;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, rgba(30,58,47,0.3) 0%, rgba(30,58,47,0.6) 60%, rgba(28,28,24,0.85) 100%),
+    linear-gradient(135deg, #1e3a2f 0%, #2e5c42 40%, #3d6b4f 70%, #1a2e22 100%);
+  z-index: 0;
+}
+
+/* Animated botanical shapes */
+.hero-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(ellipse 60% 40% at 80% 30%, rgba(122,170,138,0.15) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 20% 70%, rgba(200,151,74,0.1) 0%, transparent 50%);
+}
+
+.hero-leaf {
+  position: absolute;
+  border-radius: 50% 50% 50% 0;
+  opacity: 0.06;
+  animation: float 8s ease-in-out infinite;
+}
+.hero-leaf:nth-child(1) { width: 300px; height: 400px; background: var(--sage); top: -80px; right: 10%; transform: rotate(30deg); animation-delay: 0s; }
+.hero-leaf:nth-child(2) { width: 200px; height: 280px; background: var(--amber); top: 20%; left: 5%; transform: rotate(-20deg); animation-delay: 2s; }
+.hero-leaf:nth-child(3) { width: 160px; height: 220px; background: var(--mist); bottom: 20%; right: 25%; transform: rotate(50deg); animation-delay: 4s; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(30deg); }
+  50% { transform: translateY(-20px) rotate(30deg); }
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  padding: 0 48px;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  animation: fadeUp 1s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.hero-eyebrow {
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--amber);
+  font-weight: 500;
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+.hero-eyebrow::before {
+  content: '';
+  width: 32px; height: 1px;
+  background: var(--amber);
+  display: inline-block;
+}
+
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(42px, 6vw, 78px);
+  font-weight: 400;
+  color: #fff;
+  line-height: 1.05;
+  margin-bottom: 24px;
+  max-width: 700px;
+}
+.hero-title em {
+  font-style: italic;
+  color: var(--amber);
+}
+
+.hero-subtitle {
+  font-size: 15px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.7;
+  max-width: 460px;
+  margin-bottom: 48px;
+  letter-spacing: 0.3px;
+}
+
+/* ── SEARCH WIDGET ── */
+.search-widget {
+  background: rgba(247,243,236,0.97);
+  backdrop-filter: blur(20px);
+  border-radius: 12px;
+  padding: 28px 32px;
+  display: flex;
+  gap: 0;
+  align-items: flex-end;
+  max-width: 860px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.3);
+  border: 1px solid rgba(200,151,74,0.2);
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.search-field {
+  flex: 1;
+  min-width: 160px;
+}
+
+.search-field label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--fern);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.search-field input,
+.search-field select {
+  width: 100%;
+  border: 1.5px solid #ddd7cc;
+  border-radius: 6px;
+  padding: 12px 14px;
+  font-family: 'Jost', sans-serif;
+  font-size: 14px;
+  color: var(--ink);
+  background: #fff;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.search-field input:focus,
+.search-field select:focus {
+  border-color: var(--fern);
+  box-shadow: 0 0 0 3px rgba(74,128,96,0.1);
+}
+
+.search-divider {
+  width: 1px;
+  height: 50px;
+  background: #e0d9ce;
+  align-self: flex-end;
+  margin-bottom: 2px;
+}
+
+.search-btn {
+  background: var(--forest);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 13px 28px;
+  font-family: 'Jost', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  display: flex; align-items: center; gap: 8px;
+  min-width: 160px;
+  justify-content: center;
+}
+.search-btn:hover { background: var(--moss); transform: translateY(-1px); }
+.search-btn:active { transform: translateY(0); }
+
+.search-btn svg { width: 16px; height: 16px; }
+
+/* ── ROOMS SECTION ── */
+.rooms-section {
+  padding: 100px 48px;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.section-header {
+  margin-bottom: 56px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.section-label {
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 600;
+  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 10px;
+}
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--gold); opacity: 0.3; max-width: 60px; }
+
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 4vw, 46px);
+  font-weight: 400;
+  color: var(--forest);
+  line-height: 1.15;
+}
+.section-title em { font-style: italic; }
+
+.rooms-filter {
+  display: flex; gap: 8px;
+}
+
+.filter-btn {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1.5px solid #d8d0c4;
+  background: transparent;
+  font-family: 'Jost', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+.filter-btn:hover, .filter-btn.active {
+  background: var(--forest);
+  color: #fff;
+  border-color: var(--forest);
+}
+
+/* ── ROOMS GRID ── */
+.rooms-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 28px;
+}
+
+/* ── ROOM CARD ── */
+.room-card {
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #ebe5da;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.room-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 50px rgba(30,58,47,0.15);
+}
+
+.room-card-image {
+  height: 220px;
+  position: relative;
+  overflow: hidden;
+}
+
+.room-card-image-bg {
+  width: 100%; height: 100%;
+  transition: transform 0.5s ease;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 72px;
+}
+
+.room-card:hover .room-card-image-bg {
+  transform: scale(1.06);
+}
+
+/* Each room gets a unique gradient feel */
+.img-standard    { background: linear-gradient(135deg, #2e5c42 0%, #4a8060 50%, #7aaa8a 100%); }
+.img-deluxe      { background: linear-gradient(135deg, #1e3a2f 0%, #3d6b50 50%, #5a9070 100%); }
+.img-penthouse   { background: linear-gradient(135deg, #4a3020 0%, #8b6040 50%, #c8974a 100%); }
+.img-presidential{ background: linear-gradient(135deg, #2a1f3d 0%, #5a4070 50%, #8a70a0 100%); }
+.img-royal       { background: linear-gradient(135deg, #1a1a10 0%, #3a3a20 50%, #c8974a 100%); }
+
+.room-badge {
+  position: absolute;
+  top: 14px; left: 14px;
+  background: rgba(28,28,24,0.75);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 20px;
+}
+
+.room-badge.featured {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+.room-availability {
+  position: absolute;
+  top: 14px; right: 14px;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.8);
+}
+.room-availability.available { background: #4caf50; }
+.room-availability.limited   { background: #ff9800; }
+.room-availability.full      { background: #f44336; }
+
+.room-card-body { padding: 22px 24px 20px; }
+
+.room-card-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.room-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 19px;
+  font-weight: 500;
+  color: var(--forest);
+  line-height: 1.2;
+}
+
+.room-price {
+  text-align: right;
+}
+.price-amount {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--forest);
+}
+.price-amount small {
+  font-family: 'Jost', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: var(--sage);
+  text-transform: uppercase;
+  margin-left: 2px;
+}
+.price-weekend {
+  font-size: 11px;
+  color: var(--clay);
+  font-weight: 500;
+  margin-top: 1px;
+}
+
+.room-meta {
+  display: flex; gap: 14px;
+  font-size: 12px;
+  color: #7a7060;
+  margin-bottom: 14px;
+}
+
+.room-meta span { display: flex; align-items: center; gap: 5px; }
+
+.room-desc {
+  font-size: 13px;
+  color: #6a6358;
+  line-height: 1.65;
+  margin-bottom: 16px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.room-amenities {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.amenity-tag {
+  padding: 4px 10px;
+  background: var(--warm);
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--moss);
+  letter-spacing: 0.3px;
+}
+
+.room-card-footer {
+  display: flex; gap: 10px;
+  border-top: 1px solid #f0ebe0;
+  padding-top: 18px;
+}
+
+.btn-secondary {
+  flex: 1;
+  padding: 11px;
+  border: 1.5px solid #c8c0b0;
+  border-radius: 6px;
+  background: transparent;
+  font-family: 'Jost', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-secondary:hover { border-color: var(--forest); color: var(--forest); }
+
+.btn-primary {
+  flex: 2;
+  padding: 11px;
+  border: none;
+  border-radius: 6px;
+  background: var(--forest);
+  font-family: 'Jost', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.btn-primary:hover { background: var(--moss); }
+.btn-primary:disabled { background: #b0bab0; cursor: not-allowed; }
+
+/* ── RESULTS HEADER ── */
+.results-bar {
+  background: var(--parchment);
+  border: 1px solid #ddd6c4;
+  border-radius: 10px;
+  padding: 16px 24px;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.results-info { font-size: 14px; color: var(--ink); }
+.results-info strong { font-weight: 600; color: var(--forest); }
+.results-nights {
+  font-size: 12px; color: #7a7060;
+  background: #fff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid #ddd6c4;
+}
+
+.results-sort select {
+  border: 1.5px solid #ddd6c4;
+  border-radius: 6px;
+  padding: 7px 12px;
+  font-family: 'Jost', sans-serif;
+  font-size: 13px;
+  color: var(--ink);
+  background: #fff;
+  outline: none;
+  cursor: pointer;
+}
+
+/* ── LOADING STATE ── */
+.loading-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(247,243,236,0.85);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  align-items: center; justify-content: center;
+  flex-direction: column; gap: 16px;
+}
+.loading-overlay.show { display: flex; }
+
+.loading-spinner {
+  width: 48px; height: 48px;
+  border: 3px solid var(--mist);
+  border-top-color: var(--forest);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loading-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-style: italic;
+  color: var(--forest);
+}
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  text-align: center;
+  padding: 80px 24px;
+  display: none;
+}
+.empty-state.show { display: block; }
+.empty-state-icon { font-size: 56px; margin-bottom: 20px; opacity: 0.5; }
+.empty-state h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px; font-weight: 400;
+  color: var(--forest); margin-bottom: 10px;
+}
+.empty-state p { font-size: 14px; color: #7a7060; line-height: 1.6; }
+
+/* ── STEP PROGRESS ── */
+.booking-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 24px 48px;
+  background: #fff;
+  border-bottom: 1px solid #ede7da;
+  position: sticky;
+  top: 72px;
+  z-index: 50;
+}
+
+.step {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 500;
+  letter-spacing: 0.5px;
+  color: #a09880;
+  padding: 0 20px;
+}
+
+.step.active { color: var(--forest); }
+.step.done   { color: var(--sage); }
+
+.step-num {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: 2px solid #d0c8b8;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600;
+  transition: all 0.3s;
+}
+.step.active .step-num { border-color: var(--forest); background: var(--forest); color: #fff; }
+.step.done   .step-num { border-color: var(--sage); background: var(--sage); color: #fff; }
+
+.step-connector {
+  flex: 1; height: 1px;
+  background: #d0c8b8;
+  max-width: 60px;
+}
+.step-connector.done { background: var(--sage); }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--forest);
+  color: rgba(255,255,255,0.7);
+  padding: 40px 48px;
+  font-size: 13px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+footer a { color: var(--amber); text-decoration: none; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .nav { padding: 0 20px; }
+  .nav-links { display: none; }
+  .hero-content { padding: 0 20px; }
+  .rooms-section { padding: 60px 20px; }
+  .search-widget { padding: 20px; }
+  .section-header { flex-direction: column; gap: 20px; }
+  footer { padding: 30px 20px; }
+}
+
+/* ── ANIMATIONS ON LOAD ── */
+.room-card {
+  animation: fadeUp 0.5s ease both;
+}
+.room-card:nth-child(1) { animation-delay: 0.05s; }
+.room-card:nth-child(2) { animation-delay: 0.1s; }
+.room-card:nth-child(3) { animation-delay: 0.15s; }
+.room-card:nth-child(4) { animation-delay: 0.2s; }
+.room-card:nth-child(5) { animation-delay: 0.25s; }
+</style>
+</head>
+<body>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Searching available rooms…</div>
+</div>
+
+<!-- Navigation -->
+<nav class="nav">
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-icon">🌿</div>
+    <span class="nav-logo-text">Kitonga Garden Resort</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#">Home</a></li>
+    <li><a href="#" class="active">Book</a></li>
+    <li><a href="#">Rooms</a></li>
+    <li><a href="#">Dining</a></li>
+    <li><a href="#">Events</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+  <button class="nav-cta">+254 113 262 688</button>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-leaf"></div>
+    <div class="hero-leaf"></div>
+    <div class="hero-leaf"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Ukasi, Kitui County · Kenya</div>
+    <h1 class="hero-title">Your <em>luxurious</em><br>home away<br>from home</h1>
+    <p class="hero-subtitle">Nestled in the heart of Kenya, where lush gardens meet panoramic views of Yatta Plateau and Mount Kenya.</p>
+
+    <!-- Search Widget -->
+    <div class="search-widget" id="searchWidget">
+      <div class="search-field">
+        <label>Check-in</label>
+        <input type="date" id="checkIn" min="">
+      </div>
+      <div class="search-field">
+        <label>Check-out</label>
+        <input type="date" id="checkOut" min="">
+      </div>
+      <div class="search-field" style="max-width: 100px;">
+        <label>Adults</label>
+        <select id="adults">
+          <option>1</option><option selected>2</option>
+          <option>3</option><option>4</option>
+        </select>
+      </div>
+      <div class="search-field" style="max-width: 100px;">
+        <label>Children</label>
+        <select id="children">
+          <option selected>0</option><option>1</option>
+          <option>2</option><option>3</option>
+        </select>
+      </div>
+      <button class="search-btn" onclick="searchRooms()">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        Check Availability
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Booking Steps -->
+<div class="booking-steps" id="bookingSteps" style="display:none;">
+  <div class="step active" id="step1">
+    <div class="step-num">1</div>
+    <span>Choose Room</span>
+  </div>
+  <div class="step-connector"></div>
+  <div class="step" id="step2">
+    <div class="step-num">2</div>
+    <span>Your Details</span>
+  </div>
+  <div class="step-connector"></div>
+  <div class="step" id="step3">
+    <div class="step-num">3</div>
+    <span>Payment</span>
+  </div>
+  <div class="step-connector"></div>
+  <div class="step" id="step4">
+    <div class="step-num">4</div>
+    <span>Confirmation</span>
+  </div>
+</div>
+
+<!-- Rooms Section -->
+<section class="rooms-section" id="roomsSection">
+  <div class="section-header">
+    <div>
+      <div class="section-label">Accommodation</div>
+      <h2 class="section-title">Our Rooms &<br><em>Suites</em></h2>
+    </div>
+    <div class="rooms-filter">
+      <button class="filter-btn active" onclick="filterRooms('all', this)">All</button>
+      <button class="filter-btn" onclick="filterRooms('standard', this)">Standard</button>
+      <button class="filter-btn" onclick="filterRooms('suite', this)">Suites</button>
+    </div>
+  </div>
+
+  <!-- Results bar (shown after search) -->
+  <div class="results-bar" id="resultsBar" style="display:none;">
+    <div>
+      <div class="results-info">Showing <strong id="resultsCount">5</strong> available rooms</div>
+      <div style="margin-top:4px; font-size:12px; color:#7a7060;">
+        <span id="resultsDateRange"></span>
+        &nbsp;·&nbsp;
+        <span id="resultsNights" class="results-nights"></span>
+      </div>
+    </div>
+    <div class="results-sort">
+      <select onchange="sortRooms(this.value)">
+        <option value="price_asc">Price: Low to High</option>
+        <option value="price_desc">Price: High to Low</option>
+        <option value="capacity">Max Guests</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="rooms-grid" id="roomsGrid"></div>
+  <div class="empty-state" id="emptyState">
+    <div class="empty-state-icon">🌿</div>
+    <h3>No rooms available</h3>
+    <p>Sorry, all rooms are fully booked for your selected dates.<br>Try different dates or contact us directly at +254 113 262 688.</p>
+  </div>
+</section>
+
+<footer>
+  <div>© 2026 Kitonga Garden Resort · Ukasi, Kitui County, Kenya</div>
+  <div><a href="#">Privacy Policy</a> &nbsp;·&nbsp; <a href="#">Cancellation Policy</a> &nbsp;·&nbsp; <a href="#">Contact Us</a></div>
+</footer>
+
+<script>
+const ROOMS = [
+  {
+    id: 1, slug: 'standard', name: 'Standard Room', type: 'standard',
+    price: 8500, weekendPrice: 9500,
+    maxAdults: 2, maxChildren: 1,
+    available: 4, total: 6,
+    description: 'Private balcony overlooking lush gardens, luxury bathroom with rainfall shower, king or queen bed. The perfect retreat after a day of adventure.',
+    amenities: ['WiFi', 'Balcony', 'A/C', 'En-suite', 'Smart TV'],
+    imgClass: 'img-standard', emoji: '🛏️',
+    badge: null
+  },
+  {
+    id: 2, slug: 'deluxe', name: 'Deluxe Room', type: 'standard',
+    price: 12500, weekendPrice: 14000,
+    maxAdults: 2, maxChildren: 2,
+    available: 3, total: 6,
+    description: 'Broad balcony with seating, indoor & outdoor shower, king or twin beds with high-speed Internet. Elevated comfort for the discerning traveller.',
+    amenities: ['WiFi', 'Outdoor Shower', 'A/C', 'Mini Bar', 'Balcony Seating'],
+    imgClass: 'img-deluxe', emoji: '🌿',
+    badge: 'Most Popular'
+  },
+  {
+    id: 3, slug: 'penthouse', name: 'Penthouse Suite', type: 'suite',
+    price: 18500, weekendPrice: 22000,
+    maxAdults: 2, maxChildren: 2,
+    available: 2, total: 3,
+    description: 'Top-floor luxury with breathtaking views of the Yatta Plateau and Mount Kenya. Sofa bed available. An experience like no other in Kenya.',
+    amenities: ['WiFi', 'Mt Kenya View', 'Coffee Machine', 'Queen Bed', 'Sofa Bed'],
+    imgClass: 'img-penthouse', emoji: '🏔️',
+    badge: 'Featured'
+  },
+  {
+    id: 4, slug: 'presidential-family', name: 'Presidential Family Suite', type: 'suite',
+    price: 28000, weekendPrice: 32000,
+    maxAdults: 4, maxChildren: 2,
+    available: 1, total: 2,
+    description: 'Two bedrooms, lounge, kitchenette, and outdoor showers. Perfect for families or groups seeking the ultimate garden retreat with a complimentary fruit basket.',
+    amenities: ['2 Bedrooms', 'Kitchenette', 'Lounge', 'Outdoor Shower', 'Fruit Basket'],
+    imgClass: 'img-presidential', emoji: '👨‍👩‍👧‍👦',
+    badge: 'Family Favourite'
+  },
+  {
+    id: 5, slug: 'royal-presidential', name: 'Royal Presidential Suite', type: 'suite',
+    price: 38000, weekendPrice: 45000,
+    maxAdults: 2, maxChildren: 0,
+    available: 1, total: 1,
+    description: 'The pinnacle of luxury. Private balcony, study, walk-in closet, bathtub, king bed, and butler service. Reserved for those who accept nothing less than extraordinary.',
+    amenities: ['Butler Service', 'Bathtub', 'Study Room', 'Walk-in Closet', 'Premium Minibar'],
+    imgClass: 'img-royal', emoji: '👑',
+    badge: 'Exclusive'
+  }
+];
+
+let checkIn = '', checkOut = '', nights = 1, guestsAdults = 2, guestsChildren = 0;
+let currentRooms = [...ROOMS];
+let hasSearched = false;
+
+// Set default dates
+const today = new Date();
+const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
+const dayAfter = new Date(today); dayAfter.setDate(today.getDate() + 2);
+document.getElementById('checkIn').value = tomorrow.toISOString().split('T')[0];
+document.getElementById('checkOut').value = dayAfter.toISOString().split('T')[0];
+document.getElementById('checkIn').min = today.toISOString().split('T')[0];
+document.getElementById('checkOut').min = tomorrow.toISOString().split('T')[0];
+
+document.getElementById('checkIn').addEventListener('change', function() {
+  const next = new Date(this.value); next.setDate(next.getDate() + 1);
+  document.getElementById('checkOut').min = next.toISOString().split('T')[0];
+  if (document.getElementById('checkOut').value <= this.value) {
+    document.getElementById('checkOut').value = next.toISOString().split('T')[0];
+  }
+});
+
+function getDiffNights(from, to) {
+  return Math.ceil((new Date(to) - new Date(from)) / 86400000);
+}
+
+function formatDate(d) {
+  return new Date(d).toLocaleDateString('en-KE', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function searchRooms() {
+  checkIn    = document.getElementById('checkIn').value;
+  checkOut   = document.getElementById('checkOut').value;
+  guestsAdults   = parseInt(document.getElementById('adults').value);
+  guestsChildren = parseInt(document.getElementById('children').value);
+
+  if (!checkIn || !checkOut) {
+    alert('Please select check-in and check-out dates.');
+    return;
+  }
+
+  nights = getDiffNights(checkIn, checkOut);
+  if (nights < 1) { alert('Check-out must be after check-in.'); return; }
+
+  // Show loading
+  document.getElementById('loadingOverlay').classList.add('show');
+
+  setTimeout(() => {
+    document.getElementById('loadingOverlay').classList.remove('show');
+
+    hasSearched = true;
+    const totalGuests = guestsAdults + guestsChildren;
+    currentRooms = ROOMS.filter(r => r.maxAdults >= guestsAdults && r.available > 0);
+
+    // Show steps & results bar
+    document.getElementById('bookingSteps').style.display = 'flex';
+    document.getElementById('resultsBar').style.display = 'flex';
+    document.getElementById('resultsCount').textContent = currentRooms.length;
+    document.getElementById('resultsDateRange').textContent = `${formatDate(checkIn)} → ${formatDate(checkOut)}`;
+    document.getElementById('resultsNights').textContent = `${nights} night${nights > 1 ? 's' : ''}`;
+
+    // Scroll to rooms
+    document.getElementById('roomsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    renderRooms(currentRooms);
+  }, 1200);
+}
+
+function renderRooms(rooms) {
+  const grid = document.getElementById('roomsGrid');
+  const empty = document.getElementById('emptyState');
+
+  if (rooms.length === 0) {
+    grid.innerHTML = '';
+    empty.classList.add('show');
+    return;
+  }
+  empty.classList.remove('show');
+
+  grid.innerHTML = rooms.map(r => {
+    const totalPrice = r.price * (hasSearched ? nights : 1);
+    const availLabel = r.available <= 1 ? 'Only 1 left!' : `${r.available} available`;
+    const availClass = r.available <= 1 ? 'limited' : 'available';
+
+    return `
+    <div class="room-card" data-type="${r.type}" data-id="${r.id}">
+      <div class="room-card-image">
+        <div class="room-card-image-bg ${r.imgClass}">${r.emoji}</div>
+        ${r.badge ? `<div class="room-badge featured">${r.badge}</div>` : `<div class="room-badge">${availLabel}</div>`}
+        <div class="room-availability ${availClass}" title="${availLabel}"></div>
+      </div>
+      <div class="room-card-body">
+        <div class="room-card-header">
+          <div class="room-name">${r.name}</div>
+          <div class="room-price">
+            <div class="price-amount">KES ${(hasSearched ? totalPrice : r.price).toLocaleString()}<small>${hasSearched ? `/${nights}n` : '/night'}</small></div>
+            ${hasSearched ? `<div class="price-weekend" style="font-size:11px;color:var(--sage);">KES ${r.price.toLocaleString()}/night</div>` : `<div class="price-weekend">Wknd: KES ${r.weekendPrice.toLocaleString()}</div>`}
+          </div>
+        </div>
+        <div class="room-meta">
+          <span>👤 ${r.maxAdults} adults</span>
+          <span>🛏 ${r.maxAdults > 2 ? '2 beds' : '1 bed'}</span>
+          <span>📐 ${r.id * 8 + 24}m²</span>
+        </div>
+        <p class="room-desc">${r.description}</p>
+        <div class="room-amenities">
+          ${r.amenities.slice(0, 4).map(a => `<span class="amenity-tag">${a}</span>`).join('')}
+          ${r.amenities.length > 4 ? `<span class="amenity-tag">+${r.amenities.length - 4} more</span>` : ''}
+        </div>
+        <div class="room-card-footer">
+          <button class="btn-secondary" onclick="viewDetails(${r.id})">Details</button>
+          <button class="btn-primary" onclick="selectRoom(${r.id})" ${!hasSearched ? 'disabled' : ''}>
+            ${hasSearched ? '→ Select Room' : 'Search First'}
+          </button>
+        </div>
+      </div>
+    </div>
+    `;
+  }).join('');
+}
+
+function filterRooms(type, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const filtered = type === 'all' ? currentRooms : currentRooms.filter(r => r.type === type);
+  renderRooms(filtered);
+}
+
+function sortRooms(by) {
+  let sorted = [...currentRooms];
+  if (by === 'price_asc')  sorted.sort((a,b) => a.price - b.price);
+  if (by === 'price_desc') sorted.sort((a,b) => b.price - a.price);
+  if (by === 'capacity')   sorted.sort((a,b) => b.maxAdults - a.maxAdults);
+  renderRooms(sorted);
+}
+
+function viewDetails(id) {
+  const room = ROOMS.find(r => r.id === id);
+  alert(`${room.name}\n\nAmenities: ${room.amenities.join(', ')}\n\nFrom KES ${room.price.toLocaleString()}/night`);
+}
+
+function selectRoom(id) {
+  if (!hasSearched) return;
+  const room = ROOMS.find(r => r.id === id);
+  const params = new URLSearchParams({
+    room_id: room.id,
+    room_name: room.name,
+    check_in: checkIn,
+    check_out: checkOut,
+    nights: nights,
+    adults: guestsAdults,
+    children: guestsChildren,
+    price_per_night: room.price,
+    total: room.price * nights,
+  });
+  // In Laravel: window.location.href = `/book/guest-details?${params}`;
+  window.location.href = `booking-details.html?${params}`;
+}
+
+// Initial render
+renderRooms(ROOMS);
+</script>
+</body>
+</html>

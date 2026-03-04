@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Details — Kitonga Garden Resort</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:#1c1c18;--forest:#1e3a2f;--moss:#2e5c42;--fern:#4a8060;--sage:#7aaa8a;
+  --mist:#b8cebc;--cream:#f7f3ec;--warm:#ede7da;--parchment:#f0e9d8;
+  --gold:#c8974a;--amber:#e4b36a;--clay:#b5603c;--sand:#d4b896;
+  --error:#c0392b;--success:#27ae60;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;opacity:0.5;
+}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;padding:0 48px;height:72px;display:flex;align-items:center;justify-content:space-between;background:rgba(247,243,236,0.95);backdrop-filter:blur(16px);border-bottom:1px solid rgba(200,151,74,0.2)}
+.nav-logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.nav-logo-icon{width:36px;height:36px;background:var(--forest);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:17px}
+.nav-logo-text{font-family:'Playfair Display',serif;font-size:17px;font-weight:500;color:var(--forest)}
+.nav-back{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--sage);text-decoration:none;transition:color 0.2s}
+.nav-back:hover{color:var(--forest)}
+
+/* STEPS */
+.booking-steps{display:flex;align-items:center;justify-content:center;gap:0;padding:20px 48px;background:#fff;border-bottom:1px solid #ede7da}
+.step{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:500;letter-spacing:0.5px;color:#a09880;padding:0 20px}
+.step.active{color:var(--forest)}.step.done{color:var(--sage)}
+.step-num{width:26px;height:26px;border-radius:50%;border:2px solid #d0c8b8;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;transition:all 0.3s}
+.step.active .step-num{border-color:var(--forest);background:var(--forest);color:#fff}
+.step.done .step-num{border-color:var(--sage);background:var(--sage);color:#fff}
+.step-connector{flex:1;height:1px;background:#d0c8b8;max-width:60px}
+.step-connector.done{background:var(--sage)}
+
+/* LAYOUT */
+.page-layout{max-width:1140px;margin:0 auto;padding:48px 48px 80px;display:grid;grid-template-columns:1fr 380px;gap:48px;position:relative;z-index:1}
+
+/* FORM SECTION */
+.form-section h1{font-family:'Playfair Display',serif;font-size:clamp(28px,3vw,40px);font-weight:400;color:var(--forest);margin-bottom:8px;line-height:1.15}
+.form-section h1 em{font-style:italic}
+.form-section .subtitle{font-size:14px;color:#7a7060;margin-bottom:40px;line-height:1.6}
+
+.form-card{background:#fff;border-radius:14px;border:1px solid #ebe5da;padding:32px;margin-bottom:24px}
+.form-card-title{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:24px;padding-bottom:14px;border-bottom:1px solid #f0ebe0}
+
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.form-grid.cols-1{grid-template-columns:1fr}
+.form-grid.cols-3{grid-template-columns:1fr 1fr 1fr}
+
+.form-group{display:flex;flex-direction:column;gap:7px}
+.form-group.full{grid-column:1/-1}
+
+.form-label{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--fern);font-weight:600}
+.form-label .required{color:var(--clay);margin-left:2px}
+
+.form-input,.form-select,.form-textarea{
+  border:1.5px solid #ddd7cc;border-radius:7px;padding:12px 14px;
+  font-family:'Jost',sans-serif;font-size:14px;color:var(--ink);background:#fff;
+  outline:none;transition:border-color 0.2s,box-shadow 0.2s;width:100%
+}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--fern);box-shadow:0 0 0 3px rgba(74,128,96,0.1)}
+.form-input.error{border-color:var(--error);box-shadow:0 0 0 3px rgba(192,57,43,0.1)}
+.form-textarea{resize:vertical;min-height:90px;line-height:1.6}
+.form-select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234a8060' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+
+.form-hint{font-size:11px;color:#9a9080;margin-top:2px}
+.form-error{font-size:11px;color:var(--error);margin-top:2px;display:none}
+.form-error.show{display:block}
+
+/* RADIO CARDS */
+.radio-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;grid-column:1/-1}
+.radio-card{position:relative}
+.radio-card input{position:absolute;opacity:0;pointer-events:none}
+.radio-card-label{
+  display:flex;align-items:flex-start;gap:12px;padding:14px 16px;
+  border:1.5px solid #ddd7cc;border-radius:8px;cursor:pointer;transition:all 0.2s
+}
+.radio-card input:checked + .radio-card-label{border-color:var(--fern);background:#f5fbf6}
+.radio-card-icon{font-size:22px;flex-shrink:0}
+.radio-card-text .rtitle{font-size:13px;font-weight:600;color:var(--ink)}
+.radio-card-text .rdesc{font-size:11px;color:#7a7060;margin-top:2px}
+
+/* CHECKBOX */
+.checkbox-group{display:flex;align-items:flex-start;gap:12px;cursor:pointer;grid-column:1/-1}
+.checkbox-group input{width:18px;height:18px;accent-color:var(--fern);cursor:pointer;flex-shrink:0;margin-top:1px}
+.checkbox-group span{font-size:13px;color:#5a5248;line-height:1.5}
+.checkbox-group a{color:var(--fern);text-decoration:none}
+
+/* ── SIDEBAR / ORDER SUMMARY ── */
+.sidebar-sticky{position:sticky;top:100px}
+
+.summary-card{background:#fff;border-radius:14px;border:1px solid #ebe5da;overflow:hidden;margin-bottom:20px}
+
+.summary-room-img{
+  height:180px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:64px;
+  position:relative;
+}
+
+.summary-body{padding:22px}
+
+.summary-room-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:500;color:var(--forest);margin-bottom:14px}
+
+.summary-dates{
+  background:var(--parchment);border-radius:8px;padding:14px 16px;
+  display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;
+  margin-bottom:16px
+}
+.date-block .dlabel{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);font-weight:600}
+.date-block .dval{font-size:15px;font-weight:500;color:var(--forest);margin-top:4px}
+.date-block .dday{font-size:11px;color:#7a7060}
+.date-arrow{text-align:center;font-size:16px;color:var(--sand)}
+
+.summary-nights{text-align:center;background:var(--forest);color:#fff;border-radius:20px;padding:4px 14px;font-size:12px;font-weight:600;letter-spacing:0.5px;margin-bottom:18px;display:inline-block}
+
+.price-breakdown{border-top:1px solid #f0ebe0;padding-top:16px}
+.price-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:13.5px}
+.price-row .label{color:#7a7060}
+.price-row .value{font-weight:500;color:var(--ink)}
+.price-row.total{border-top:1px dashed #ddd7cc;margin-top:14px;padding-top:14px;font-size:15px}
+.price-row.total .label{font-weight:600;color:var(--forest)}
+.price-row.total .value{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--forest)}
+
+/* SECURE BADGE */
+.secure-badge{
+  display:flex;align-items:center;gap:8px;
+  background:var(--parchment);border-radius:8px;padding:12px 14px;
+  font-size:12px;color:#7a7060;
+  border:1px solid #e0d9cc;
+}
+.secure-badge strong{color:var(--forest)}
+
+/* TRUST ICONS */
+.trust-row{display:flex;gap:16px;justify-content:center;padding:16px 22px 20px;border-top:1px solid #f0ebe0}
+.trust-item{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;letter-spacing:0.5px;text-transform:uppercase;color:#9a9080;font-weight:600}
+.trust-item .ticon{font-size:20px}
+
+/* SUBMIT */
+.submit-btn{
+  width:100%;padding:16px;border:none;border-radius:8px;
+  background:var(--forest);color:#fff;
+  font-family:'Jost',sans-serif;font-size:14px;font-weight:600;
+  letter-spacing:1.5px;text-transform:uppercase;
+  cursor:pointer;transition:all 0.2s;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  margin-top:4px;
+}
+.submit-btn:hover{background:var(--moss);transform:translateY(-1px);box-shadow:0 8px 24px rgba(30,58,47,0.25)}
+.submit-btn:active{transform:none}
+.submit-btn:disabled{background:#a0a898;cursor:not-allowed;transform:none;box-shadow:none}
+
+/* FORM PROGRESS */
+.form-progress{height:4px;background:#e8e2d8;border-radius:2px;margin-bottom:32px;overflow:hidden}
+.form-progress-bar{height:100%;background:linear-gradient(to right,var(--fern),var(--sage));border-radius:2px;transition:width 0.4s ease;width:0%}
+
+@media(max-width:900px){
+  .page-layout{grid-template-columns:1fr;gap:32px}
+  .sidebar-sticky{position:static}
+  .nav{padding:0 20px}
+  .page-layout{padding:32px 20px 60px}
+  .booking-steps{padding:16px 20px}
+  .form-grid{grid-template-columns:1fr}
+  .form-grid.cols-3{grid-template-columns:1fr 1fr}
+  .radio-cards{grid-template-columns:1fr}
+}
+
+/* animations */
+.form-card{animation:fadeUp 0.4s ease both}
+.form-card:nth-child(1){animation-delay:0.05s}
+.form-card:nth-child(2){animation-delay:0.1s}
+.form-card:nth-child(3){animation-delay:0.15s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="booking-search.html" class="nav-logo">
+    <div class="nav-logo-icon">🌿</div>
+    <span class="nav-logo-text">Kitonga Garden Resort</span>
+  </a>
+  <a href="booking-search.html" class="nav-back">← Change Room</a>
+</nav>
+
+<!-- Steps -->
+<div class="booking-steps">
+  <div class="step done"><div class="step-num">✓</div><span>Choose Room</span></div>
+  <div class="step-connector done"></div>
+  <div class="step active"><div class="step-num">2</div><span>Your Details</span></div>
+  <div class="step-connector"></div>
+  <div class="step"><div class="step-num">3</div><span>Payment</span></div>
+  <div class="step-connector"></div>
+  <div class="step"><div class="step-num">4</div><span>Confirmation</span></div>
+</div>
+
+<div class="page-layout">
+
+  <!-- FORM COLUMN -->
+  <div class="form-section">
+    <h1>Almost <em>there</em></h1>
+    <p class="subtitle">Tell us a little about yourself. Your details are safe with us and used only to complete your booking.</p>
+
+    <div class="form-progress"><div class="form-progress-bar" id="progressBar"></div></div>
+
+    <form id="bookingForm" onsubmit="submitForm(event)" novalidate>
+
+      <!-- Personal Details -->
+      <div class="form-card">
+        <div class="form-card-title">Personal Details</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">First Name <span class="required">*</span></label>
+            <input type="text" class="form-input" id="firstName" placeholder="e.g. Jane" required>
+            <span class="form-error" id="firstNameErr">Please enter your first name</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name <span class="required">*</span></label>
+            <input type="text" class="form-input" id="lastName" placeholder="e.g. Mwangi" required>
+            <span class="form-error" id="lastNameErr">Please enter your last name</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address <span class="required">*</span></label>
+            <input type="email" class="form-input" id="email" placeholder="jane@example.com" required>
+            <span class="form-error" id="emailErr">Please enter a valid email</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number <span class="required">*</span></label>
+            <input type="tel" class="form-input" id="phone" placeholder="+254 7XX XXX XXX" required>
+            <div class="form-hint">Used for M-Pesa payment & booking confirmation SMS</div>
+            <span class="form-error" id="phoneErr">Please enter a valid phone number</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nationality</label>
+            <select class="form-select" id="nationality">
+              <option value="">Select country</option>
+              <option value="KE" selected>Kenya</option>
+              <option value="UG">Uganda</option>
+              <option value="TZ">Tanzania</option>
+              <option value="RW">Rwanda</option>
+              <option value="ET">Ethiopia</option>
+              <option value="OTHER">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">ID / Passport Number</label>
+            <input type="text" class="form-input" id="idNumber" placeholder="National ID or Passport">
+            <div class="form-hint">Required at check-in</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stay Details -->
+      <div class="form-card">
+        <div class="form-card-title">Stay Preferences</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Estimated Arrival Time</label>
+            <select class="form-select" id="arrivalTime">
+              <option value="">Select time</option>
+              <option>Before 12:00 PM (Early Check-in)</option>
+              <option selected>2:00 PM – 4:00 PM</option>
+              <option>4:00 PM – 6:00 PM</option>
+              <option>6:00 PM – 8:00 PM</option>
+              <option>After 8:00 PM (Late Arrival)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Bed Preference</label>
+            <select class="form-select" id="bedPreference">
+              <option value="">No preference</option>
+              <option>King Bed</option>
+              <option>Queen Bed</option>
+              <option>Twin Beds</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Special Requests</label>
+            <textarea class="form-textarea" id="specialRequests" placeholder="Dietary requirements, accessibility needs, room location preferences, anniversary surprises…"></textarea>
+            <div class="form-hint">We'll do our best to accommodate. Not guaranteed.</div>
+          </div>
+
+          <!-- Occasion radio cards -->
+          <div class="form-group full">
+            <label class="form-label" style="margin-bottom:12px">Celebrating Something Special?</label>
+            <div class="radio-cards">
+              <div class="radio-card">
+                <input type="radio" name="occasion" id="occ-none" value="" checked>
+                <label class="radio-card-label" for="occ-none">
+                  <span class="radio-card-icon">🌿</span>
+                  <div class="radio-card-text"><div class="rtitle">Just a getaway</div><div class="rdesc">Regular stay</div></div>
+                </label>
+              </div>
+              <div class="radio-card">
+                <input type="radio" name="occasion" id="occ-honeymoon" value="honeymoon">
+                <label class="radio-card-label" for="occ-honeymoon">
+                  <span class="radio-card-icon">💍</span>
+                  <div class="radio-card-text"><div class="rtitle">Honeymoon</div><div class="rdesc">We'll add a surprise</div></div>
+                </label>
+              </div>
+              <div class="radio-card">
+                <input type="radio" name="occasion" id="occ-birthday" value="birthday">
+                <label class="radio-card-label" for="occ-birthday">
+                  <span class="radio-card-icon">🎂</span>
+                  <div class="radio-card-text"><div class="rtitle">Birthday</div><div class="rdesc">Let us celebrate you</div></div>
+                </label>
+              </div>
+              <div class="radio-card">
+                <input type="radio" name="occasion" id="occ-anniversary" value="anniversary">
+                <label class="radio-card-label" for="occ-anniversary">
+                  <span class="radio-card-icon">🥂</span>
+                  <div class="radio-card-text"><div class="rtitle">Anniversary</div><div class="rdesc">We'll make it memorable</div></div>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- T&Cs -->
+      <div class="form-card">
+        <div class="form-card-title">Terms & Conditions</div>
+        <div class="form-grid cols-1">
+          <label class="checkbox-group">
+            <input type="checkbox" id="agreeTerms" required>
+            <span>I agree to the <a href="#">Terms & Conditions</a> and <a href="#">Cancellation Policy</a>. Free cancellation up to 48 hours before check-in. <span class="form-error" id="termsErr" style="display:inline;margin:0;padding:0"> — required</span></span>
+          </label>
+          <label class="checkbox-group">
+            <input type="checkbox" id="agreeMarketing">
+            <span>Send me special offers and updates from Kitonga Garden Resort (optional)</span>
+          </label>
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">
+        <span id="submitText">Continue to Payment →</span>
+      </button>
+    </form>
+  </div>
+
+  <!-- SIDEBAR -->
+  <aside>
+    <div class="sidebar-sticky">
+      <div class="summary-card">
+        <div class="summary-room-img" id="summaryImg" style="background: linear-gradient(135deg, #1e3a2f 0%, #3d6b50 50%, #5a9070 100%);">
+          <span id="summaryEmoji">🌿</span>
+        </div>
+        <div class="summary-body">
+          <div class="summary-room-name" id="summaryRoomName">Deluxe Room</div>
+
+          <div class="summary-dates">
+            <div class="date-block">
+              <div class="dlabel">Check-in</div>
+              <div class="dval" id="summaryCheckIn">—</div>
+              <div class="dday" id="summaryCheckInDay"></div>
+            </div>
+            <div class="date-arrow">→</div>
+            <div class="date-block" style="text-align:right">
+              <div class="dlabel">Check-out</div>
+              <div class="dval" id="summaryCheckOut">—</div>
+              <div class="dday" id="summaryCheckOutDay"></div>
+            </div>
+          </div>
+
+          <div style="text-align:center;margin-bottom:18px;">
+            <span class="summary-nights" id="summaryNights">1 Night</span>
+          </div>
+
+          <div class="price-breakdown">
+            <div class="price-row">
+              <span class="label" id="roomRateLabel">Room rate × 1 night</span>
+              <span class="value" id="subtotalVal">KES 0</span>
+            </div>
+            <div class="price-row">
+              <span class="label">VAT (16%)</span>
+              <span class="value" id="vatVal">KES 0</span>
+            </div>
+            <div class="price-row">
+              <span class="label">Discount</span>
+              <span class="value" style="color:var(--sage)">— 0</span>
+            </div>
+            <div class="price-row total">
+              <span class="label">Total</span>
+              <span class="value" id="totalVal">KES 0</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="trust-row">
+          <div class="trust-item"><span class="ticon">🔒</span>Secure</div>
+          <div class="trust-item"><span class="ticon">💚</span>Free Cancel</div>
+          <div class="trust-item"><span class="ticon">📱</span>Instant SMS</div>
+          <div class="trust-item"><span class="ticon">⭐</span>4.8 / 5</div>
+        </div>
+      </div>
+
+      <div class="secure-badge">
+        🔒 &nbsp;<div><strong>100% Secure Booking</strong><br>Your data is encrypted and never shared</div>
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+<script>
+// Read URL params
+const params = new URLSearchParams(window.location.search);
+const roomName      = params.get('room_name') || 'Deluxe Room';
+const checkIn       = params.get('check_in')  || '2026-03-01';
+const checkOut      = params.get('check_out') || '2026-03-03';
+const nights        = parseInt(params.get('nights') || '2');
+const pricePerNight = parseInt(params.get('price_per_night') || '12500');
+const total         = pricePerNight * nights;
+const vat           = Math.round(total * 0.16);
+const grandTotal    = total + vat;
+const adults        = params.get('adults') || '2';
+const children      = params.get('children') || '0';
+
+// Populate summary
+document.getElementById('summaryRoomName').textContent = roomName;
+document.getElementById('summaryNights').textContent = `${nights} Night${nights > 1 ? 's' : ''} · ${adults} adult${adults > 1 ? 's' : ''}${children > 0 ? ` · ${children} child` : ''}`;
+
+function fmtDate(d) {
+  const dt = new Date(d);
+  return dt.toLocaleDateString('en-KE', { day: 'numeric', month: 'short' });
+}
+function fmtDay(d) {
+  return new Date(d).toLocaleDateString('en-KE', { weekday: 'long', year: 'numeric' });
+}
+
+document.getElementById('summaryCheckIn').textContent    = fmtDate(checkIn);
+document.getElementById('summaryCheckOut').textContent   = fmtDate(checkOut);
+document.getElementById('summaryCheckInDay').textContent = fmtDay(checkIn);
+document.getElementById('summaryCheckOutDay').textContent= fmtDay(checkOut);
+document.getElementById('roomRateLabel').textContent     = `Room rate × ${nights} night${nights>1?'s':''}`;
+document.getElementById('subtotalVal').textContent       = `KES ${total.toLocaleString()}`;
+document.getElementById('vatVal').textContent            = `KES ${vat.toLocaleString()}`;
+document.getElementById('totalVal').textContent          = `KES ${grandTotal.toLocaleString()}`;
+
+// Progress bar
+const fields = ['firstName','lastName','email','phone'];
+function updateProgress() {
+  const filled = fields.filter(f => document.getElementById(f)?.value.trim()).length;
+  const pct = Math.round((filled / (fields.length + 1)) * 100);
+  document.getElementById('progressBar').style.width = pct + '%';
+}
+fields.forEach(f => document.getElementById(f)?.addEventListener('input', updateProgress));
+
+// Validation
+function validate() {
+  let ok = true;
+  const rules = [
+    { id: 'firstName', errId: 'firstNameErr', check: v => v.trim().length >= 2 },
+    { id: 'lastName',  errId: 'lastNameErr',  check: v => v.trim().length >= 2 },
+    { id: 'email',     errId: 'emailErr',     check: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) },
+    { id: 'phone',     errId: 'phoneErr',     check: v => v.replace(/\D/g,'').length >= 9 },
+  ];
+  rules.forEach(r => {
+    const el  = document.getElementById(r.id);
+    const err = document.getElementById(r.errId);
+    if (!r.check(el.value)) {
+      el.classList.add('error');
+      err.classList.add('show');
+      ok = false;
+    } else {
+      el.classList.remove('error');
+      err.classList.remove('show');
+    }
+  });
+  const terms = document.getElementById('agreeTerms');
+  const termsErr = document.getElementById('termsErr');
+  if (!terms.checked) {
+    termsErr.classList.add('show');
+    ok = false;
+  } else {
+    termsErr.classList.remove('show');
+  }
+  return ok;
+}
+
+function submitForm(e) {
+  e.preventDefault();
+  if (!validate()) return;
+
+  const btn = document.getElementById('submitBtn');
+  document.getElementById('submitText').textContent = 'Processing…';
+  btn.disabled = true;
+
+  const guestData = {
+    first_name:       document.getElementById('firstName').value,
+    last_name:        document.getElementById('lastName').value,
+    email:            document.getElementById('email').value,
+    phone:            document.getElementById('phone').value,
+    nationality:      document.getElementById('nationality').value,
+    id_number:        document.getElementById('idNumber').value,
+    arrival_time:     document.getElementById('arrivalTime').value,
+    bed_preference:   document.getElementById('bedPreference').value,
+    special_requests: document.getElementById('specialRequests').value,
+    occasion:         document.querySelector('input[name="occasion"]:checked')?.value || '',
+    marketing:        document.getElementById('agreeMarketing').checked,
+  };
+
+  // Build payment page params
+  const payParams = new URLSearchParams({
+    ...Object.fromEntries(params),
+    grand_total: grandTotal,
+    vat: vat,
+    guest_name: `${guestData.first_name} ${guestData.last_name}`,
+    guest_phone: guestData.phone,
+    guest_email: guestData.email,
+  });
+
+  setTimeout(() => {
+    // In Laravel: POST to /booking/reserve then redirect
+    window.location.href = `booking-payment.html?${payParams}`;
+  }, 600);
+}
+</script>
+</body>
+</html>

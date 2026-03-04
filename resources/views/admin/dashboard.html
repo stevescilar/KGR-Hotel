@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KGR Admin — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  :root {
+    --forest:   #1a2e1a;
+    --deep:     #0f1e0f;
+    --moss:     #2d4a2d;
+    --sage:     #4a7c59;
+    --fern:     #6b9e7a;
+    --mint:     #a8c5a8;
+    --cream:    #f5f0e8;
+    --warm:     #ede5d4;
+    --gold:     #c9a84c;
+    --amber:    #e8b84b;
+    --clay:     #c4714a;
+    --rose:     #d4846a;
+    --slate:    #8a9a8a;
+    --text:     #1a2e1a;
+    --sidebar-w: 260px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    display: flex;
+    min-height: 100vh;
+    font-size: 14px;
+  }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--forest);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    z-index: 100;
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar-brand {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .brand-logo {
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .brand-icon {
+    width: 36px; height: 36px;
+    background: var(--gold);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+
+  .brand-text .name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.5px;
+    line-height: 1;
+  }
+  .brand-text .sub {
+    font-size: 10px;
+    color: var(--mint);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    padding: 16px 0;
+    overflow-y: auto;
+  }
+
+  .nav-section-label {
+    font-size: 9px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--slate);
+    padding: 12px 24px 6px;
+    margin-top: 8px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 24px;
+    color: rgba(255,255,255,0.65);
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 400;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+    cursor: pointer;
+  }
+
+  .nav-item:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.06);
+    border-left-color: var(--fern);
+  }
+
+  .nav-item.active {
+    color: #fff;
+    background: rgba(169, 197, 169, 0.12);
+    border-left-color: var(--gold);
+    font-weight: 500;
+  }
+
+  .nav-item .icon {
+    width: 18px;
+    text-align: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+
+  .nav-badge {
+    margin-left: auto;
+    background: var(--clay);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 20px;
+  }
+
+  .nav-badge.green { background: var(--sage); }
+  .nav-badge.gold  { background: var(--gold); color: var(--forest); }
+
+  .sidebar-footer {
+    padding: 16px 24px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .user-info {
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .user-avatar {
+    width: 34px; height: 34px;
+    background: var(--sage);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .user-details .uname { font-size: 13px; font-weight: 500; color: #fff; }
+  .user-details .urole { font-size: 11px; color: var(--mint); }
+
+  /* ─── MAIN ─── */
+  .main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  /* ─── TOPBAR ─── */
+  .topbar {
+    background: #fff;
+    border-bottom: 1px solid #e8e8e2;
+    padding: 0 32px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 90;
+  }
+
+  .topbar-left {
+    display: flex; align-items: center; gap: 16px;
+  }
+
+  .page-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--forest);
+    letter-spacing: 0.3px;
+  }
+
+  .topbar-date {
+    font-size: 12px;
+    color: var(--slate);
+    border-left: 1px solid #e0e0d8;
+    padding-left: 16px;
+    margin-left: 4px;
+  }
+
+  .topbar-right { display: flex; align-items: center; gap: 12px; }
+
+  .topbar-btn {
+    width: 36px; height: 36px;
+    border: 1px solid #e8e8e2;
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .topbar-btn:hover { background: var(--warm); border-color: var(--mint); }
+
+  .notif-dot {
+    position: absolute; top: 6px; right: 6px;
+    width: 7px; height: 7px;
+    background: var(--clay);
+    border-radius: 50%;
+    border: 1.5px solid #fff;
+  }
+
+  .quick-action {
+    background: var(--forest);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .quick-action:hover { background: var(--moss); }
+
+  /* ─── CONTENT ─── */
+  .content {
+    padding: 32px;
+    flex: 1;
+  }
+
+  /* ─── STAT CARDS ─── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .stat-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #ebe8e0;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .stat-card.green::before  { background: var(--sage); }
+  .stat-card.gold::before   { background: var(--gold); }
+  .stat-card.clay::before   { background: var(--clay); }
+  .stat-card.forest::before { background: var(--forest); }
+  .stat-card.blue::before   { background: #5b8fa8; }
+  .stat-card.rose::before   { background: var(--rose); }
+
+  .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+
+  .stat-label {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin-bottom: 8px;
+  }
+
+  .stat-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px;
+    font-weight: 600;
+    color: var(--forest);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .stat-value.money::before { content: 'KES '; font-size: 18px; font-weight: 400; color: var(--slate); }
+
+  .stat-sub {
+    font-size: 12px;
+    color: var(--slate);
+    display: flex; align-items: center; gap: 4px;
+  }
+
+  .stat-sub .up   { color: var(--sage); }
+  .stat-sub .down { color: var(--clay); }
+
+  .stat-icon {
+    position: absolute;
+    top: 20px; right: 20px;
+    font-size: 28px;
+    opacity: 0.1;
+  }
+
+  /* ─── OCCUPANCY BAR ─── */
+  .occupancy-bar-wrap {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px 24px;
+    border: 1px solid #ebe8e0;
+    margin-bottom: 28px;
+  }
+
+  .occ-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 14px;
+  }
+
+  .occ-title { font-size: 13px; font-weight: 600; color: var(--forest); letter-spacing: 0.3px; }
+  .occ-pct { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600; color: var(--forest); }
+
+  .rooms-row { display: flex; gap: 8px; height: 28px; border-radius: 6px; overflow: hidden; }
+
+  .room-block {
+    height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 600; color: #fff;
+    transition: opacity 0.2s;
+    cursor: pointer;
+    position: relative;
+  }
+  .room-block:hover { opacity: 0.85; }
+  .room-block.occupied    { background: var(--sage); }
+  .room-block.cleaning    { background: var(--amber); color: var(--forest); }
+  .room-block.maintenance { background: var(--clay); }
+  .room-block.available   { background: #e8ede8; color: var(--sage); }
+
+  .room-legend { display: flex; gap: 16px; margin-top: 10px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--slate); }
+  .legend-dot  { width: 8px; height: 8px; border-radius: 2px; }
+
+  /* ─── LOWER GRID ─── */
+  .lower-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 380px;
+    gap: 20px;
+  }
+
+  .panel {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #ebe8e0;
+    overflow: hidden;
+  }
+
+  .panel-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f0ede6;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  .panel-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--forest);
+    letter-spacing: 0.3px;
+  }
+
+  .panel-link {
+    font-size: 11px;
+    color: var(--sage);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .panel-body { padding: 0; }
+
+  /* ─── BOOKING LIST ─── */
+  .booking-row {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    border-bottom: 1px solid #f5f3ee;
+    gap: 12px;
+    transition: background 0.15s;
+  }
+
+  .booking-row:hover { background: #faf9f6; }
+  .booking-row:last-child { border-bottom: none; }
+
+  .booking-avatar {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--warm);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--forest);
+    flex-shrink: 0;
+  }
+
+  .booking-info { flex: 1; min-width: 0; }
+  .booking-name { font-weight: 500; font-size: 13px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .booking-meta { font-size: 11px; color: var(--slate); margin-top: 1px; }
+
+  .booking-right { text-align: right; flex-shrink: 0; }
+  .booking-ref { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--sage); }
+  .booking-dates { font-size: 11px; color: var(--slate); margin-top: 2px; }
+
+  /* ─── STATUS BADGES ─── */
+  .badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .badge.confirmed   { background: #e8f5ea; color: #2e7d47; }
+  .badge.pending     { background: #fff3e0; color: #e65100; }
+  .badge.checked_in  { background: #e3f2fd; color: #1565c0; }
+  .badge.checked_out { background: #f3e5f5; color: #6a1b9a; }
+  .badge.cancelled   { background: #fce4ec; color: #b71c1c; }
+
+  /* ─── CHART ─── */
+  .chart-container { padding: 16px 20px; height: 220px; }
+
+  /* ─── TODAY'S TIMELINE ─── */
+  .timeline-item {
+    padding: 10px 20px;
+    border-bottom: 1px solid #f5f3ee;
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+  .timeline-item:last-child { border-bottom: none; }
+
+  .timeline-time {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--slate);
+    min-width: 44px;
+    padding-top: 2px;
+  }
+
+  .timeline-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-top: 5px;
+    flex-shrink: 0;
+  }
+
+  .timeline-dot.in  { background: var(--sage); }
+  .timeline-dot.out { background: var(--clay); }
+
+  .timeline-content { flex: 1; }
+  .timeline-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .timeline-detail { font-size: 11px; color: var(--slate); margin-top: 1px; }
+
+  /* ─── QUICK STATS ROW ─── */
+  .mini-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .mini-stat {
+    background: #fff;
+    border-radius: 10px;
+    padding: 14px 16px;
+    border: 1px solid #ebe8e0;
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .mini-stat-icon {
+    width: 38px; height: 38px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .mini-stat-icon.green  { background: #e8f5ea; }
+  .mini-stat-icon.gold   { background: #fff8e1; }
+  .mini-stat-icon.orange { background: #fff3e0; }
+
+  .mini-stat-val { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: var(--forest); line-height: 1; }
+  .mini-stat-lbl { font-size: 11px; color: var(--slate); margin-top: 2px; }
+
+  /* ─── ALERTS / NOTICES ─── */
+  .notice-bar {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 12.5px;
+    color: #92400e;
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  /* ─── SCROLL ─── */
+  .scroll-panel { overflow-y: auto; max-height: 380px; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 1100px) {
+    .lower-grid { grid-template-columns: 1fr 1fr; }
+    .lower-grid > :last-child { grid-column: 1 / -1; }
+  }
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); }
+    .main { margin-left: 0; }
+    .lower-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .mini-stats { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-logo">
+      <div class="brand-icon">🌿</div>
+      <div class="brand-text">
+        <div class="name">Kitonga Garden</div>
+        <div class="sub">Resort Manager</div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="nav-item active" href="#">
+      <span class="icon">⬛</span> Dashboard
+    </a>
+
+    <div class="nav-section-label">Accommodation</div>
+    <a class="nav-item" href="#">
+      <span class="icon">📋</span> Bookings
+      <span class="nav-badge">3</span>
+    </a>
+    <a class="nav-item" href="#">
+      <span class="icon">🛏</span> Rooms
+    </a>
+    <a class="nav-item" href="#">
+      <span class="icon">👤</span> Guests
+    </a>
+    <a class="nav-item" href="#">
+      <span class="icon">🔑</span> Front Desk
+      <span class="nav-badge green">2 in</span>
+    </a>
+
+    <div class="nav-section-label">Food & Events</div>
+    <a class="nav-item" href="#">
+      <span class="icon">🍽</span> Restaurant Orders
+      <span class="nav-badge">5</span>
+    </a>
+    <a class="nav-item" href="#">
+      <span class="icon">📅</span> Table Reservations
+    </a>
+    <a class="nav-item" href="#">
+      <span class="icon">🎉</span> Events & Weddings
+      <span class="nav-badge gold">2</span>
+    </a>
+
+    <div class="nav-section-label">Revenue</div>
+    <a class="nav-item" href="#">
+      <span class="icon">🎟</span> Gate Tickets
+    </a>
+    <a class="nav-item" href="#">
+      <span class="icon">💳</span> Payments
+    </a>
+    <a class="nav-item" href="#">
+      <span class="icon">🎁</span> Gift Cards
+    </a>
+    <a class="nav-item" href="#">
+      <span class="icon">💎</span> Loyalty Program
+    </a>
+
+    <div class="nav-section-label">HR & Reports</div>
+    <a class="nav-item" href="#">
+      <span class="icon">👔</span> Careers
+      <span class="nav-badge">8</span>
+    </a>
+    <a class="nav-item" href="#">
+      <span class="icon">📊</span> Reports
+    </a>
+    <a class="nav-item" href="#">
+      <span class="icon">🔧</span> Settings
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-info">
+      <div class="user-avatar">JM</div>
+      <div class="user-details">
+        <div class="uname">James Mutua</div>
+        <div class="urole">Front Desk Manager</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<div class="main">
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <span class="page-title">Dashboard</span>
+      <span class="topbar-date" id="currentDate"></span>
+    </div>
+    <div class="topbar-right">
+      <button class="topbar-btn" title="Search">🔍</button>
+      <button class="topbar-btn" title="Notifications">
+        🔔
+        <span class="notif-dot"></span>
+      </button>
+      <button class="quick-action">
+        ➕ New Booking
+      </button>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <main class="content">
+
+    <!-- Alert -->
+    <div class="notice-bar">
+      ⚠️ <strong>3 bookings</strong> are awaiting payment confirmation. &nbsp;
+      <a href="#" style="color: var(--gold); font-weight: 600; text-decoration: none;">Review now →</a>
+    </div>
+
+    <!-- Stat Cards -->
+    <div class="stats-grid">
+      <div class="stat-card green">
+        <div class="stat-label">Today's Check-ins</div>
+        <div class="stat-value">4</div>
+        <div class="stat-sub"><span class="up">↑ 2</span> from yesterday</div>
+        <div class="stat-icon">🔑</div>
+      </div>
+      <div class="stat-card clay">
+        <div class="stat-label">Today's Check-outs</div>
+        <div class="stat-value">2</div>
+        <div class="stat-sub">2 rooms → cleaning</div>
+        <div class="stat-icon">🚪</div>
+      </div>
+      <div class="stat-card gold">
+        <div class="stat-label">Today's Revenue</div>
+        <div class="stat-value money">48,500</div>
+        <div class="stat-sub"><span class="up">↑ 12%</span> vs last week</div>
+        <div class="stat-icon">💰</div>
+      </div>
+      <div class="stat-card forest">
+        <div class="stat-label">Monthly Revenue</div>
+        <div class="stat-value money">1.2M</div>
+        <div class="stat-sub">Target: KES 1.5M</div>
+        <div class="stat-icon">📈</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-label">Pending Bookings</div>
+        <div class="stat-value">7</div>
+        <div class="stat-sub">3 awaiting payment</div>
+        <div class="stat-icon">📋</div>
+      </div>
+      <div class="stat-card rose">
+        <div class="stat-label">New Applications</div>
+        <div class="stat-value">8</div>
+        <div class="stat-sub">For 3 open positions</div>
+        <div class="stat-icon">👔</div>
+      </div>
+    </div>
+
+    <!-- Occupancy Bar -->
+    <div class="occupancy-bar-wrap">
+      <div class="occ-header">
+        <span class="occ-title">Room Occupancy — Today</span>
+        <span class="occ-pct">72%</span>
+      </div>
+      <div class="rooms-row" id="roomsBar"></div>
+      <div class="room-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--sage)"></div> Occupied (18)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div> Cleaning (3)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--clay)"></div> Maintenance (2)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#e8ede8)"></div> Available (2)</div>
+      </div>
+    </div>
+
+    <!-- Mini stats row -->
+    <div class="mini-stats">
+      <div class="mini-stat">
+        <div class="mini-stat-icon green">🍽</div>
+        <div>
+          <div class="mini-stat-val">5</div>
+          <div class="mini-stat-lbl">Open Restaurant Orders</div>
+        </div>
+      </div>
+      <div class="mini-stat">
+        <div class="mini-stat-icon gold">🎟</div>
+        <div>
+          <div class="mini-stat-val">43</div>
+          <div class="mini-stat-lbl">Gate Tickets Today</div>
+        </div>
+      </div>
+      <div class="mini-stat">
+        <div class="mini-stat-icon orange">🎉</div>
+        <div>
+          <div class="mini-stat-val">2</div>
+          <div class="mini-stat-lbl">Event Inquiries Pending</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lower grid -->
+    <div class="lower-grid">
+
+      <!-- Revenue Chart -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Revenue — Last 7 Days</span>
+          <a href="#" class="panel-link">Full Report →</a>
+        </div>
+        <div class="chart-container">
+          <canvas id="revenueChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Recent Bookings -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Recent Bookings</span>
+          <a href="#" class="panel-link">View All →</a>
+        </div>
+        <div class="panel-body scroll-panel">
+          <div class="booking-row">
+            <div class="booking-avatar">AM</div>
+            <div class="booking-info">
+              <div class="booking-name">Alice Mwangi</div>
+              <div class="booking-meta">Penthouse Suite · 2 adults</div>
+            </div>
+            <div class="booking-right">
+              <div class="booking-ref">KGR-2026-00041</div>
+              <div class="booking-dates">Feb 26 – Mar 1</div>
+              <span class="badge confirmed">Confirmed</span>
+            </div>
+          </div>
+          <div class="booking-row">
+            <div class="booking-avatar">JK</div>
+            <div class="booking-info">
+              <div class="booking-name">James Kamau</div>
+              <div class="booking-meta">Deluxe Room · 2 adults, 1 child</div>
+            </div>
+            <div class="booking-right">
+              <div class="booking-ref">KGR-2026-00040</div>
+              <div class="booking-dates">Feb 25 – Feb 28</div>
+              <span class="badge checked_in">Checked In</span>
+            </div>
+          </div>
+          <div class="booking-row">
+            <div class="booking-avatar">FO</div>
+            <div class="booking-info">
+              <div class="booking-name">Faith Omondi</div>
+              <div class="booking-meta">Standard Room · 1 adult</div>
+            </div>
+            <div class="booking-right">
+              <div class="booking-ref">KGR-2026-00039</div>
+              <div class="booking-dates">Feb 26 – Feb 27</div>
+              <span class="badge pending">Pending</span>
+            </div>
+          </div>
+          <div class="booking-row">
+            <div class="booking-avatar">SO</div>
+            <div class="booking-info">
+              <div class="booking-name">Samuel Odhiambo</div>
+              <div class="booking-meta">Royal Presidential · 2 adults</div>
+            </div>
+            <div class="booking-right">
+              <div class="booking-ref">KGR-2026-00038</div>
+              <div class="booking-dates">Feb 24 – Feb 27</div>
+              <span class="badge checked_in">Checked In</span>
+            </div>
+          </div>
+          <div class="booking-row">
+            <div class="booking-avatar">PW</div>
+            <div class="booking-info">
+              <div class="booking-name">Patricia Waweru</div>
+              <div class="booking-meta">Deluxe Room · 2 adults</div>
+            </div>
+            <div class="booking-right">
+              <div class="booking-ref">KGR-2026-00037</div>
+              <div class="booking-dates">Feb 20 – Feb 23</div>
+              <span class="badge checked_out">Checked Out</span>
+            </div>
+          </div>
+          <div class="booking-row">
+            <div class="booking-avatar">DN</div>
+            <div class="booking-info">
+              <div class="booking-name">David Njoroge</div>
+              <div class="booking-meta">Standard Room · 2 adults</div>
+            </div>
+            <div class="booking-right">
+              <div class="booking-ref">KGR-2026-00036</div>
+              <div class="booking-dates">Feb 27 – Mar 2</div>
+              <span class="badge confirmed">Confirmed</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Today's Timeline -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Today's Arrivals & Departures</span>
+        </div>
+        <div class="panel-body scroll-panel">
+          <div style="padding: 10px 20px; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--sage); font-weight: 600;">
+            Arrivals
+          </div>
+          <div class="timeline-item">
+            <span class="timeline-time">10:00</span>
+            <div class="timeline-dot in"></div>
+            <div class="timeline-content">
+              <div class="timeline-name">Alice Mwangi</div>
+              <div class="timeline-detail">Penthouse Suite · 3 nights · Confirmed</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <span class="timeline-time">12:00</span>
+            <div class="timeline-dot in"></div>
+            <div class="timeline-content">
+              <div class="timeline-name">David Njoroge</div>
+              <div class="timeline-detail">Standard Room · 4 nights · Confirmed</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <span class="timeline-time">14:00</span>
+            <div class="timeline-dot in"></div>
+            <div class="timeline-content">
+              <div class="timeline-name">Faith Omondi</div>
+              <div class="timeline-detail">Standard Room · 1 night · Pending pmt</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <span class="timeline-time">15:30</span>
+            <div class="timeline-dot in"></div>
+            <div class="timeline-content">
+              <div class="timeline-name">George Kimani</div>
+              <div class="timeline-detail">Deluxe Room · 2 nights · Confirmed</div>
+            </div>
+          </div>
+
+          <div style="padding: 10px 20px; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--clay); font-weight: 600; border-top: 1px solid #f0ede6; margin-top: 8px;">
+            Departures
+          </div>
+          <div class="timeline-item">
+            <span class="timeline-time">10:00</span>
+            <div class="timeline-dot out"></div>
+            <div class="timeline-content">
+              <div class="timeline-name">James Kamau</div>
+              <div class="timeline-detail">Deluxe Room · Balance: KES 0</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <span class="timeline-time">11:00</span>
+            <div class="timeline-dot out"></div>
+            <div class="timeline-content">
+              <div class="timeline-name">Rose Njeri</div>
+              <div class="timeline-detail">Standard Room · Balance: KES 3,200</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script>
+  // ── Date ──
+  document.getElementById('currentDate').textContent =
+    new Date().toLocaleDateString('en-KE', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+  // ── Rooms Bar ──
+  const roomsBar = document.getElementById('roomsBar');
+  const rooms = [
+    ...Array(18).fill('occupied'),
+    ...Array(3).fill('cleaning'),
+    ...Array(2).fill('maintenance'),
+    ...Array(2).fill('available'),
+  ];
+  rooms.forEach((status, i) => {
+    const d = document.createElement('div');
+    d.className = `room-block ${status}`;
+    d.style.flex = '1';
+    d.title = `Room ${i + 101} — ${status}`;
+    roomsBar.appendChild(d);
+  });
+
+  // ── Revenue Chart ──
+  const ctx = document.getElementById('revenueChart').getContext('2d');
+  const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const roomRevenue = [32000, 28000, 45000, 38000, 52000, 68000, 48500];
+  const fnbRevenue  = [8000, 6500, 9200, 7800, 11000, 15000, 10200];
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Rooms',
+          data: roomRevenue,
+          backgroundColor: 'rgba(74, 124, 89, 0.85)',
+          borderRadius: 5,
+          borderSkipped: false,
+        },
+        {
+          label: 'F&B',
+          data: fnbRevenue,
+          backgroundColor: 'rgba(201, 168, 76, 0.85)',
+          borderRadius: 5,
+          borderSkipped: false,
+        },
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index' },
+      plugins: {
+        legend: {
+          position: 'top',
+          labels: {
+            font: { family: 'DM Sans', size: 11 },
+            boxWidth: 10, boxHeight: 10, borderRadius: 3,
+            color: '#4a7c59',
+          }
+        },
+        tooltip: {
+          backgroundColor: '#1a2e1a',
+          titleFont: { family: 'Cormorant Garamond', size: 14 },
+          bodyFont: { family: 'DM Sans', size: 12 },
+          padding: 10,
+          callbacks: {
+            label: ctx => ` KES ${ctx.raw.toLocaleString()}`
+          }
+        }
+      },
+      scales: {
+        x: {
+          stacked: true,
+          grid: { display: false },
+          ticks: { font: { family: 'DM Sans', size: 11 }, color: '#8a9a8a' }
+        },
+        y: {
+          stacked: true,
+          grid: { color: '#f0ede6', drawBorder: false },
+          ticks: {
+            font: { family: 'DM Sans', size: 11 },
+            color: '#8a9a8a',
+            callback: v => 'KES ' + (v/1000).toFixed(0) + 'k'
+          }
+        }
+      }
+    }
+  });
+</script>
+</body>
+</html>

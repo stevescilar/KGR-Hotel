@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Booking Confirmed — Kitonga Garden Resort</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Jost:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1c1c18;--forest:#1e3a2f;--moss:#2e5c42;--fern:#4a8060;--sage:#7aaa8a;
+  --mist:#b8cebc;--cream:#f7f3ec;--warm:#ede7da;--parchment:#f0e9d8;
+  --gold:#c8974a;--amber:#e4b36a;--clay:#b5603c;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh}
+
+/* NOISE */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.5}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;padding:0 48px;height:72px;display:flex;align-items:center;justify-content:space-between;background:rgba(247,243,236,0.95);backdrop-filter:blur(16px);border-bottom:1px solid rgba(200,151,74,0.2)}
+.nav-logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.nav-logo-icon{width:36px;height:36px;background:var(--forest);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:17px}
+.nav-logo-text{font-family:'Playfair Display',serif;font-size:17px;font-weight:500;color:var(--forest)}
+
+/* STEPS */
+.booking-steps{display:flex;align-items:center;justify-content:center;gap:0;padding:20px 48px;background:#fff;border-bottom:1px solid #ede7da}
+.step{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:500;letter-spacing:0.5px;color:#a09880;padding:0 20px}
+.step.done{color:var(--sage)}
+.step-num{width:26px;height:26px;border-radius:50%;border:2px solid #d0c8b8;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600}
+.step.done .step-num{border-color:var(--sage);background:var(--sage);color:#fff}
+.step.active .step-num{border-color:var(--gold);background:var(--gold);color:#fff}
+.step.active{color:var(--forest)}
+.step-connector{flex:1;height:1px;background:#d0c8b8;max-width:60px}
+.step-connector.done{background:var(--sage)}
+
+/* HERO CONFIRM */
+.confirm-hero{
+  background:linear-gradient(135deg,#1e3a2f 0%,#2e5c42 50%,#1a2e22 100%);
+  padding:64px 48px;text-align:center;position:relative;overflow:hidden;
+}
+.confirm-hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(122,170,138,0.15),transparent);
+}
+.confetti-ring{
+  width:96px;height:96px;border-radius:50%;
+  background:rgba(255,255,255,0.1);backdrop-filter:blur(8px);
+  border:2px solid rgba(255,255,255,0.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:48px;margin:0 auto 24px;
+  animation:popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+  position:relative;z-index:1;
+}
+@keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+
+.confirm-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(28px,4vw,52px);font-weight:400;color:#fff;
+  line-height:1.1;margin-bottom:14px;
+  position:relative;z-index:1;
+  animation:fadeUp 0.6s ease 0.2s both;
+}
+.confirm-title em{font-style:italic;color:var(--amber)}
+.confirm-subtitle{
+  font-size:15px;font-weight:300;color:rgba(255,255,255,0.75);
+  line-height:1.6;max-width:520px;margin:0 auto;
+  position:relative;z-index:1;
+  animation:fadeUp 0.6s ease 0.3s both;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* BOOKING CARD */
+.page-content{max-width:900px;margin:0 auto;padding:48px;position:relative;z-index:1}
+
+.booking-card{
+  background:#fff;border-radius:16px;border:1px solid #ebe5da;
+  overflow:hidden;margin-bottom:24px;
+  animation:fadeUp 0.5s ease 0.4s both;
+}
+
+.bc-header{
+  background:var(--forest);color:#fff;padding:24px 32px;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;
+}
+.bc-ref-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;opacity:0.7;margin-bottom:4px}
+.bc-ref{font-family:'DM Mono',monospace;font-size:22px;font-weight:500;letter-spacing:1.5px}
+.bc-status{background:rgba(76,175,80,0.25);border:1px solid rgba(76,175,80,0.5);color:#a8e6a0;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;letter-spacing:0.5px;display:flex;align-items:center;gap:6px}
+
+.bc-body{padding:32px;display:grid;grid-template-columns:1fr 1fr;gap:0}
+
+.bc-room-section{padding-right:32px;border-right:1px solid #f0ebe0}
+.bc-dates-section{padding-left:32px}
+
+.bc-section-label{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:14px}
+
+.bc-room-name{font-family:'Playfair Display',serif;font-size:24px;font-weight:500;color:var(--forest);margin-bottom:8px}
+.bc-room-badge{display:inline-block;background:var(--parchment);border:1px solid #ddd0bc;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;color:var(--moss);letter-spacing:0.5px;margin-bottom:16px}
+
+.info-rows{}
+.info-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #f5f0e8;font-size:13.5px}
+.info-row:last-child{border-bottom:none}
+.info-row .ikey{color:#7a7060}
+.info-row .ival{font-weight:600;color:var(--ink);text-align:right}
+
+/* DATES VISUAL */
+.dates-visual{display:flex;align-items:center;gap:0;margin-bottom:24px}
+.date-pill{
+  flex:1;background:var(--parchment);border-radius:8px;
+  padding:14px 16px;text-align:center;border:1px solid #ddd0bc;
+}
+.dp-type{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:4px}
+.dp-date{font-family:'Playfair Display',serif;font-size:20px;font-weight:500;color:var(--forest);line-height:1.2}
+.dp-day{font-size:11px;color:#7a7060;margin-top:2px}
+.dates-arrow{padding:0 12px;font-size:22px;color:var(--sand)}
+.nights-badge{text-align:center;margin-bottom:20px}
+.nights-badge span{background:var(--forest);color:#fff;border-radius:20px;padding:5px 16px;font-size:12px;font-weight:600;letter-spacing:0.5px}
+
+/* PAYMENT SECTION */
+.payment-section{background:var(--parchment);border-top:1px solid #ede7da;padding:28px 32px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center}
+.payment-left{}
+.ps-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:10px}
+.payment-row{display:flex;justify-content:space-between;font-size:13px;color:#5a5248;margin-bottom:7px}
+.payment-row strong{color:var(--ink)}
+.payment-divider{height:1px;background:#ddd0bc;margin:10px 0}
+.payment-total{display:flex;justify-content:space-between;align-items:center}
+.payment-total .label{font-size:14px;font-weight:700;color:var(--forest)}
+.payment-total .value{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--forest)}
+.payment-method{text-align:right;background:#fff;border-radius:10px;padding:16px 20px;border:1px solid #ddd0bc}
+.pm-icon{font-size:28px;margin-bottom:6px}
+.pm-name{font-size:12px;font-weight:700;color:var(--forest);letter-spacing:0.5px}
+.pm-ref{font-family:'DM Mono',monospace;font-size:11px;color:#9a9080;margin-top:2px}
+
+/* QR / VOUCHER */
+.voucher-section{
+  background:#fff;border-radius:14px;border:2px dashed #c8b898;
+  padding:32px;text-align:center;margin-bottom:24px;
+  position:relative;animation:fadeUp 0.5s ease 0.5s both;
+}
+.voucher-section::before,.voucher-section::after{
+  content:'';position:absolute;width:20px;height:20px;
+  background:var(--cream);border-radius:50%;
+  top:50%;transform:translateY(-50%);
+  border:2px solid #c8b898;
+}
+.voucher-section::before{left:-12px;border-left:none}
+.voucher-section::after{right:-12px;border-right:none}
+.voucher-title{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:16px}
+.qr-placeholder{
+  width:140px;height:140px;margin:0 auto 16px;
+  background:var(--ink);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:11px;letter-spacing:1px;
+  position:relative;overflow:hidden;
+}
+.qr-placeholder::before{
+  content:'';position:absolute;inset:8px;
+  border:3px solid rgba(255,255,255,0.3);border-radius:4px;
+}
+/* Fake QR grid */
+.qr-grid{
+  position:absolute;inset:16px;
+  display:grid;grid-template-columns:repeat(8,1fr);gap:1px;
+}
+.qr-grid div{border-radius:1px;background:rgba(255,255,255,0.85)}
+
+.voucher-desc{font-size:13px;color:#7a7060;line-height:1.6;margin-bottom:16px}
+.voucher-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.vbtn{
+  padding:10px 20px;border-radius:7px;font-family:'Jost',sans-serif;
+  font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;
+  transition:all 0.2s;display:flex;align-items:center;gap:6px;text-decoration:none;
+}
+.vbtn-primary{background:var(--forest);color:#fff;border:none}
+.vbtn-primary:hover{background:var(--moss)}
+.vbtn-secondary{background:transparent;color:var(--forest);border:1.5px solid #c0b8a8}
+.vbtn-secondary:hover{border-color:var(--forest)}
+
+/* WHAT'S NEXT */
+.whats-next{background:#fff;border-radius:14px;border:1px solid #ebe5da;padding:32px;margin-bottom:24px;animation:fadeUp 0.5s ease 0.6s both}
+.wn-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:400;color:var(--forest);margin-bottom:24px}
+.wn-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.wn-item{text-align:center;padding:20px 16px;background:var(--parchment);border-radius:10px}
+.wn-icon{font-size:32px;margin-bottom:10px}
+.wn-heading{font-size:13px;font-weight:700;color:var(--forest);margin-bottom:6px;letter-spacing:0.3px}
+.wn-text{font-size:12px;color:#7a7060;line-height:1.55}
+
+/* CONTACT */
+.contact-bar{
+  background:var(--forest);color:#fff;border-radius:12px;
+  padding:24px 32px;display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:16px;margin-bottom:24px;
+  animation:fadeUp 0.5s ease 0.7s both;
+}
+.contact-bar-text h3{font-family:'Playfair Display',serif;font-size:20px;font-weight:400;margin-bottom:4px}
+.contact-bar-text p{font-size:13px;opacity:0.75}
+.contact-btns{display:flex;gap:10px;flex-wrap:wrap}
+.contact-btn{
+  padding:10px 18px;border-radius:7px;font-family:'Jost',sans-serif;
+  font-size:12px;font-weight:600;letter-spacing:0.5px;cursor:pointer;
+  transition:all 0.2s;text-decoration:none;display:flex;align-items:center;gap:6px;
+}
+.contact-btn-white{background:#fff;color:var(--forest);border:none}
+.contact-btn-white:hover{background:var(--cream)}
+.contact-btn-outline{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,0.4)}
+.contact-btn-outline:hover{background:rgba(255,255,255,0.1)}
+
+/* FOOTER */
+footer{background:var(--forest);color:rgba(255,255,255,0.7);padding:32px 48px;font-size:13px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+footer a{color:var(--amber);text-decoration:none}
+
+@media(max-width:700px){
+  .page-content{padding:24px 20px}
+  .bc-body{grid-template-columns:1fr}
+  .bc-room-section{border-right:none;border-bottom:1px solid #f0ebe0;padding-right:0;padding-bottom:24px;margin-bottom:24px}
+  .bc-dates-section{padding-left:0}
+  .payment-section{grid-template-columns:1fr}
+  .wn-grid{grid-template-columns:1fr}
+  .bc-header{flex-direction:column}
+  .confirm-hero,.nav{padding-left:20px;padding-right:20px}
+  .booking-steps{padding:16px 20px}
+  footer{padding:24px 20px}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="booking-search.html" class="nav-logo">
+    <div class="nav-logo-icon">🌿</div>
+    <span class="nav-logo-text">Kitonga Garden Resort</span>
+  </a>
+  <a href="booking-search.html" style="font-size:13px;color:var(--sage);text-decoration:none;font-weight:500">Book Another Stay</a>
+</nav>
+
+<div class="booking-steps">
+  <div class="step done"><div class="step-num">✓</div><span>Choose Room</span></div>
+  <div class="step-connector done"></div>
+  <div class="step done"><div class="step-num">✓</div><span>Your Details</span></div>
+  <div class="step-connector done"></div>
+  <div class="step done"><div class="step-num">✓</div><span>Payment</span></div>
+  <div class="step-connector done"></div>
+  <div class="step active"><div class="step-num">✓</div><span>Confirmed!</span></div>
+</div>
+
+<!-- Hero -->
+<div class="confirm-hero">
+  <div class="confetti-ring">🎉</div>
+  <h1 class="confirm-title">You're all set,<br><em id="heroGuestName">dear guest</em></h1>
+  <p class="confirm-subtitle">Your reservation at Kitonga Garden Resort is confirmed. A confirmation SMS and email have been sent to you.</p>
+</div>
+
+<div class="page-content">
+
+  <!-- Main Booking Card -->
+  <div class="booking-card">
+    <div class="bc-header">
+      <div>
+        <div class="bc-ref-label">Booking Reference</div>
+        <div class="bc-ref" id="bcRef">KGR-2026-—</div>
+      </div>
+      <div class="bc-status">✓ &nbsp;Booking Confirmed</div>
+    </div>
+
+    <div class="bc-body">
+      <!-- Room Info -->
+      <div class="bc-room-section">
+        <div class="bc-section-label">Accommodation</div>
+        <div class="bc-room-name" id="bcRoomName">—</div>
+        <div class="bc-room-badge" id="bcRoomBadge">Kitonga Garden Resort</div>
+        <div class="info-rows">
+          <div class="info-row"><span class="ikey">Guest</span><span class="ival" id="bcGuest">—</span></div>
+          <div class="info-row"><span class="ikey">Guests</span><span class="ival" id="bcGuests">—</span></div>
+          <div class="info-row"><span class="ikey">Phone</span><span class="ival" id="bcPhone">—</span></div>
+          <div class="info-row"><span class="ikey">Email</span><span class="ival" id="bcEmail">—</span></div>
+        </div>
+      </div>
+
+      <!-- Dates Info -->
+      <div class="bc-dates-section">
+        <div class="bc-section-label">Stay Dates</div>
+        <div class="dates-visual">
+          <div class="date-pill">
+            <div class="dp-type">Check-in</div>
+            <div class="dp-date" id="dcCheckIn">—</div>
+            <div class="dp-day" id="dcCheckInDay">from 2:00 PM</div>
+          </div>
+          <div class="dates-arrow">→</div>
+          <div class="date-pill">
+            <div class="dp-type">Check-out</div>
+            <div class="dp-date" id="dcCheckOut">—</div>
+            <div class="dp-day">by 11:00 AM</div>
+          </div>
+        </div>
+        <div class="nights-badge"><span id="dcNights">—</span></div>
+        <div class="info-rows">
+          <div class="info-row"><span class="ikey">Booked</span><span class="ival" id="bcBooked">—</span></div>
+          <div class="info-row"><span class="ikey">Loyalty Points</span><span class="ival" style="color:var(--sage)" id="bcPoints">+0 pts</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment Summary -->
+    <div class="payment-section">
+      <div class="payment-left">
+        <div class="ps-label">Payment Summary</div>
+        <div class="payment-row"><span>Room subtotal</span><strong id="psSubtotal">—</strong></div>
+        <div class="payment-row"><span>VAT (16%)</span><strong id="psVat">—</strong></div>
+        <div class="payment-divider"></div>
+        <div class="payment-total">
+          <span class="label">Amount Paid</span>
+          <span class="value" id="psTotal">KES 0</span>
+        </div>
+      </div>
+      <div class="payment-method">
+        <div class="pm-icon">📱</div>
+        <div class="pm-name">M-PESA</div>
+        <div class="pm-ref" id="pmRef">—</div>
+        <div style="margin-top:6px;font-size:11px;color:var(--sage);font-weight:600;">✓ Paid</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QR Voucher -->
+  <div class="voucher-section">
+    <div class="voucher-title">Your Digital Room Voucher</div>
+    <div class="qr-placeholder" id="qrCode">
+      <div class="qr-grid" id="qrGrid"></div>
+    </div>
+    <p class="voucher-desc">
+      Present this QR code or your <strong id="voucherRef">booking reference</strong> at the front desk upon arrival.<br>
+      No printing needed — just show it on your phone.
+    </p>
+    <div class="voucher-btns">
+      <button class="vbtn vbtn-primary" onclick="window.print()">🖨 Print Voucher</button>
+      <button class="vbtn vbtn-secondary" onclick="shareBooking()">📤 Share</button>
+      <a class="vbtn vbtn-secondary" id="calBtn" href="#">📅 Add to Calendar</a>
+    </div>
+  </div>
+
+  <!-- What's Next -->
+  <div class="whats-next">
+    <h2 class="wn-title">What happens next?</h2>
+    <div class="wn-grid">
+      <div class="wn-item">
+        <div class="wn-icon">📱</div>
+        <div class="wn-heading">SMS Confirmation</div>
+        <div class="wn-text">You've received an SMS with your booking details. Save the reference number: <strong id="wnRef">—</strong></div>
+      </div>
+      <div class="wn-item">
+        <div class="wn-icon">📍</div>
+        <div class="wn-heading">Getting Here</div>
+        <div class="wn-text">We're located on the Thika–Garissa Road in Ukasi, Kitui County. Call us for directions on arrival.</div>
+      </div>
+      <div class="wn-item">
+        <div class="wn-icon">🕑</div>
+        <div class="wn-heading">Check-in Time</div>
+        <div class="wn-text">Standard check-in is from 2:00 PM. Early check-in is subject to availability — call us in advance.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact Bar -->
+  <div class="contact-bar">
+    <div class="contact-bar-text">
+      <h3>Need anything before your stay?</h3>
+      <p>Our team is available 24/7 to help with any arrangements or special requests.</p>
+    </div>
+    <div class="contact-btns">
+      <a href="tel:+254113262688" class="contact-btn contact-btn-white">📞 +254 113 262 688</a>
+      <a href="https://wa.me/254113262688" class="contact-btn contact-btn-outline">💬 WhatsApp</a>
+      <a href="mailto:info@kitongagardenresort.com" class="contact-btn contact-btn-outline">✉️ Email Us</a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div>© 2026 Kitonga Garden Resort · Ukasi, Kitui County, Kenya</div>
+  <div><a href="#">Privacy Policy</a> · <a href="#">Cancellation Policy</a></div>
+</footer>
+
+<script>
+const params      = new URLSearchParams(window.location.search);
+const roomName    = params.get('room_name') || 'Deluxe Room';
+const checkIn     = params.get('check_in')  || '2026-03-01';
+const checkOut    = params.get('check_out') || '2026-03-03';
+const nights      = parseInt(params.get('nights') || '2');
+const adults      = params.get('adults') || '2';
+const children    = params.get('children') || '0';
+const grandTotal  = parseInt(params.get('grand_total') || '29000');
+const vat         = parseInt(params.get('vat') || '4000');
+const subtotal    = grandTotal - vat;
+const guestName   = params.get('guest_name') || 'Dear Guest';
+const guestPhone  = params.get('guest_phone') || '—';
+const guestEmail  = params.get('guest_email') || '—';
+const bookingRef  = params.get('booking_ref') || ('KGR-' + new Date().getFullYear() + '-' + String(Math.floor(Math.random() * 90000) + 10000));
+const mpesaReceipt= 'QHV' + Math.random().toString(36).substr(2, 8).toUpperCase();
+const loyaltyPts  = Math.floor(grandTotal / 100);
+
+function fmt(d){ return new Date(d).toLocaleDateString('en-KE',{day:'numeric',month:'short'}) }
+function fmtFull(d){ return new Date(d).toLocaleDateString('en-KE',{weekday:'short',day:'numeric',month:'long',year:'numeric'}) }
+
+// Populate
+document.getElementById('heroGuestName').textContent   = guestName.split(' ')[0];
+document.getElementById('bcRef').textContent           = bookingRef;
+document.getElementById('bcRoomName').textContent      = roomName;
+document.getElementById('bcRoomBadge').textContent     = `${Math.floor(Math.random() * 5) + 1} · Cottage A · Floor ${Math.floor(Math.random() * 3) + 1}`;
+document.getElementById('bcGuest').textContent         = guestName;
+document.getElementById('bcGuests').textContent        = `${adults} adult${adults>1?'s':''}${children>0?' · '+children+' child':''}`;
+document.getElementById('bcPhone').textContent         = guestPhone;
+document.getElementById('bcEmail').textContent         = guestEmail;
+document.getElementById('dcCheckIn').textContent       = fmt(checkIn);
+document.getElementById('dcCheckInDay').textContent    = new Date(checkIn).toLocaleDateString('en-KE',{weekday:'long'}) + ' · from 2:00 PM';
+document.getElementById('dcCheckOut').textContent      = fmt(checkOut);
+document.getElementById('dcNights').textContent        = `${nights} Night${nights>1?'s':''} · ${adults} Guest${adults>1?'s':''}`;
+document.getElementById('bcBooked').textContent        = new Date().toLocaleDateString('en-KE',{day:'numeric',month:'short',year:'numeric'});
+document.getElementById('bcPoints').textContent        = `+${loyaltyPts.toLocaleString()} pts`;
+document.getElementById('psSubtotal').textContent      = 'KES ' + subtotal.toLocaleString();
+document.getElementById('psVat').textContent           = 'KES ' + vat.toLocaleString();
+document.getElementById('psTotal').textContent         = 'KES ' + grandTotal.toLocaleString();
+document.getElementById('pmRef').textContent           = mpesaReceipt;
+document.getElementById('voucherRef').textContent      = bookingRef;
+document.getElementById('wnRef').textContent           = bookingRef;
+
+// QR fake grid
+const grid = document.getElementById('qrGrid');
+const pattern = [1,0,1,1,0,1,0,1,0,1,1,0,1,1,0,1,1,1,0,0,1,0,1,0,0,1,0,1,0,1,1,1,1,0,0,0,1,1,0,1,0,0,1,0,1,1,0,1,1,1,0,1,0,0,1,0,1,0,1,1,0,1,0,1];
+pattern.forEach(v => {
+  const d = document.createElement('div');
+  d.style.opacity = v ? '0.9' : '0.1';
+  grid.appendChild(d);
+});
+
+// Calendar link
+const ciDate = new Date(checkIn).toISOString().replace(/[-:]/g,'').split('.')[0] + 'T140000';
+const coDate = new Date(checkOut).toISOString().replace(/[-:]/g,'').split('.')[0] + 'T110000';
+document.getElementById('calBtn').href = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=Stay+at+Kitonga+Garden+Resort&dates=${ciDate}/${coDate}&details=Booking+Reference:+${bookingRef}&location=Ukasi,+Kitui+County,+Kenya`;
+
+function shareBooking() {
+  const text = `My booking at Kitonga Garden Resort 🌿\nRef: ${bookingRef}\nCheck-in: ${fmtFull(checkIn)}\nCheck-out: ${fmtFull(checkOut)}\n\nSee you there!`;
+  if (navigator.share) {
+    navigator.share({ title: 'Kitonga Garden Resort Booking', text });
+  } else {
+    navigator.clipboard.writeText(text).then(() => alert('Booking details copied to clipboard!'));
+  }
+}
+
+// Confetti burst (CSS only — pure aesthetic)
+setTimeout(() => {
+  document.title = '🎉 Booking Confirmed — Kitonga Garden Resort';
+}, 500);
+</script>
+</body>
+</html>

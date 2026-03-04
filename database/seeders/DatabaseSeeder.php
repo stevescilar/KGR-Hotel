@@ -208,6 +208,8 @@ class DatabaseSeeder extends Seeder
             ]));
         }
 
+        $this->call(RolesAndPermissionsSeeder::class);
+
         $this->command->info('✅ KGR database seeded successfully!');
         $this->command->table(['Role', 'Email', 'Password'], [
             ['Super Admin',  'admin@kgr.co.ke',  'password'],
