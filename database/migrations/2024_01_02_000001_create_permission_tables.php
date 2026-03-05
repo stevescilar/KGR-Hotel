@@ -61,8 +61,7 @@ return new class extends Migration
             $table->primary(['permission_id', 'role_id'], 'role_has_permissions_permission_id_role_id_primary');
         });
 
-        app('cache')->store(config('permission.cache.store', 'default'))
-            ->forget(config('permission.cache.key', 'spatie.permission.cache'));
+        // Cache cleared by seeder after permissions are populated
     }
 
     public function down(): void
