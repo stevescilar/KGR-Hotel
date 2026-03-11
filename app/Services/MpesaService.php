@@ -7,11 +7,11 @@ use Illuminate\Support\Facades\{Http, Log};
 
 class MpesaService
 {
-    private string $consumerKey;
-    private string $consumerSecret;
-    private string $shortcode;
-    private string $passkey;
-    private string $callbackUrl;
+    private ?string $consumerKey;
+    private ?string $consumerSecret;
+    private ?string $shortcode;
+    private ?string $passkey;
+    private ?string $callbackUrl;
     private bool $sandbox;
 
     public function __construct()

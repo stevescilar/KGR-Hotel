@@ -154,7 +154,7 @@
                     <div class="summary-row"><span class="lbl">Check-out</span><span class="val">{{ $checkOut->format('D, M j Y') }}</span></div>
                     <div class="summary-row"><span class="lbl">Duration</span><span class="val">{{ $nights }} night{{ $nights !== 1 ? 's' : '' }}</span></div>
                     <div class="summary-row"><span class="lbl">Guests</span><span class="val">{{ $adults }} adult{{ $adults !== 1 ? 's' : '' }}{{ $children ? ", {$children} child" . ($children !== 1 ? 'ren' : '') : '' }}</span></div>
-                    <div class="summary-row"><span class="lbl">Room rate</span><span class="val">KES {{ number_format($costs['price_per_night']) }} / night</span></div>
+                    <div class="summary-row"><span class="lbl">Room rate</span><span class="val">KES {{ number_format($costs['nights'] > 0 ? $costs['subtotal'] / $costs['nights'] : 0) }} / night</span></div>
                     <div class="summary-row"><span class="lbl">Subtotal</span><span class="val">KES {{ number_format($costs['subtotal']) }}</span></div>
                     <div class="summary-row"><span class="lbl">VAT (16%)</span><span class="val">KES {{ number_format($costs['tax']) }}</span></div>
                     <div class="summary-total">

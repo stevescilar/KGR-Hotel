@@ -5,6 +5,20 @@
 
 @push('styles')
 <style>
+    @media print {
+        @page { size: landscape; margin: 1.5cm; }
+        * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        a[href]::after { content: none !important; }
+        body > *:not(.confirm-section) { display: none !important; }
+        .confirm-section { margin: 0 !important; padding: 0 !important; background: white !important; }
+        .confirm-card { box-shadow: none !important; max-width: 100% !important; border: 1px solid #ddd; display: grid; grid-template-columns: 280px 1fr; }
+        .confirm-header { background: #1e3a2f !important; -webkit-print-color-adjust: exact; }
+        .actions { display: none !important; }
+        .navbar, footer { display: none !important; }
+        .details-grid { grid-template-columns: repeat(3, 1fr); }
+        .checkin-notice { font-size: 0.75rem; }
+    }
+
     .confirm-section { background:var(--cream); padding:5rem 0; margin-top:72px; min-height:calc(100vh - 72px); }
     .confirm-card { background:white; border-radius:20px; box-shadow:0 4px 40px rgba(0,0,0,0.08); max-width:640px; margin:0 auto; overflow:hidden; }
 

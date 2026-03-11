@@ -184,8 +184,39 @@ class BookingController extends Controller
         ]);
     }
 
-    public function confirmation(Booking $booking): View
+    /**
+     * TEST ONLY — bypass M-Pesa and mark booking as paid directly.
+     * Remove this route and method before going to production.
+     */
+    public function testPayment(Booking $booking): RedirectResponse
     {
+        abort_if(app()->isProduction(), 404);
+        abort_if(session('booking_id') !== $booking->id, 403);
+
+        Payment::create([
+            'reference'          => 'TEST-' . strtoupper(uniqid()),
+            'payable_type'       => Booking::class,
+            'payable_id'         => $booking->id,
+            'guest_id'           => $booking->guest_id,
+            'amount'             => $booking->total_amount,
+            'currency'           => 'KES',
+            'method'             => 'mpesa',
+            'status'             => 'completed',
+            'provider_reference' => 'TEST-MPESA-' . strtoupper(uniqid()),
+            'provider_response'  => ['test' => true],
+            'paid_at'            => now(),
+        ]);
+
+        $booking->update([
+            'paid_amount'    => $booking->total_amount,
+            'payment_status' => 'paid',
+            'status'         => 'confirmed',
+        ]);
+
+        return redirect()->route('booking.confirmation', $booking);
+    }
+
+    public function confirmation(Booking $booking): View    {
         abort_if(
             session('booking_id') !== $booking->id
             && $booking->payment_status !== 'paid',

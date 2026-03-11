@@ -21,7 +21,8 @@ Route::get('/rooms', [HomeController::class, 'rooms'])->name('rooms');
 Route::get('/rooms/{roomType:slug}', [HomeController::class, 'roomType'])->name('rooms.show');
 Route::get('/food-drinks', [MenuController::class, 'index'])->name('menu');
 Route::get('/events', [EventController::class, 'index'])->name('events');
-Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
+Route::get('/contact',  [HomeController::class, 'contact'])->name('contact');
+Route::post('/contact', [HomeController::class, 'contactSubmit'])->name('contact.submit');
 
 // ── Room Booking ───────────────────────────────────────────
 Route::prefix('book')->name('booking.')->group(function () {
@@ -33,6 +34,7 @@ Route::prefix('book')->name('booking.')->group(function () {
     Route::post('/pay/mpesa/{booking}', [BookingController::class, 'payMpesa'])->name('pay.mpesa');
     Route::get('/pay/mpesa/{booking}/status', [BookingController::class, 'pollPayment'])->name('pay.mpesa.poll');
     Route::get('/confirmation/{booking}', [BookingController::class, 'confirmation'])->name('confirmation');
+    Route::get('/pay/test/{booking}', [BookingController::class, 'testPayment'])->name('pay.test');
 });
 
 // ── Gate Tickets ───────────────────────────────────────────

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Complete Your Booking')
+@section('title', 'Complete Payment')
 @section('navbar-class', 'scrolled')
 
 @push('styles')
@@ -15,153 +15,126 @@
     .step-num { width:24px; height:24px; border-radius:50%; border:2px solid currentColor; display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:700; }
     .step-sep { width:40px; height:2px; background:#e5e7eb; }
 
-    .details-section { background:var(--cream); padding:4rem 0 5rem; }
-    .details-layout { display:grid; grid-template-columns:1fr 360px; gap:2.5rem; align-items:start; }
+    .payment-section { background:var(--cream); padding:4rem 0 5rem; }
+    .payment-layout { display:grid; grid-template-columns:1fr 380px; gap:2.5rem; align-items:start; max-width:900px; margin:0 auto; }
 
-    /* Guest form */
-    .form-card { background:white; border-radius:16px; padding:2rem; box-shadow:0 2px 16px rgba(0,0,0,0.06); }
-    .form-card h2 { font-family:'Playfair Display',serif; font-size:1.25rem; color:var(--forest); margin-bottom:1.5rem; }
-    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
-    .form-group { margin-bottom:1rem; }
-    .form-group label { display:block; font-size:0.7rem; font-weight:700; color:var(--fern); letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.4rem; }
-    .form-group input, .form-group select, .form-group textarea { width:100%; border:1.5px solid #e5e7eb; border-radius:8px; padding:0.65rem 0.9rem; font-size:0.9rem; font-family:'Jost',sans-serif; outline:none; transition:border-color 0.2s; }
-    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:var(--fern); }
-    .form-section-label { font-size:0.7rem; font-weight:700; color:var(--gold); letter-spacing:0.2em; text-transform:uppercase; border-bottom:1px solid var(--mist); padding-bottom:0.5rem; margin:1.5rem 0 1rem; }
-    .checkbox-group { display:flex; align-items:flex-start; gap:0.65rem; }
-    .checkbox-group input[type=checkbox] { width:auto; margin-top:0.2rem; flex-shrink:0; }
-    .checkbox-group label { font-size:0.85rem; color:#4b5563; font-weight:400; letter-spacing:normal; text-transform:none; }
-
-    .btn-reserve { width:100%; background:var(--forest); color:white; border:none; cursor:pointer; padding:1rem; border-radius:10px; font-size:0.95rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; font-family:'Jost',sans-serif; margin-top:1rem; transition:background 0.2s; }
-    .btn-reserve:hover { background:var(--moss); }
-
-    /* Summary sidebar */
-    .summary-card { background:white; border-radius:16px; padding:1.75rem; box-shadow:0 4px 24px rgba(0,0,0,0.08); position:sticky; top:88px; }
-    .summary-card h3 { font-family:'Playfair Display',serif; font-size:1.15rem; color:var(--forest); margin-bottom:1.25rem; }
-    .room-thumb { height:140px; background:var(--warm); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:3rem; margin-bottom:1.25rem; background-size:cover; background-position:center; }
-    .room-name { font-family:'Playfair Display',serif; font-size:1.1rem; color:var(--forest); margin-bottom:0.25rem; }
-    .room-sub { font-size:0.82rem; color:#6b7280; margin-bottom:1.25rem; }
-    .summary-row { display:flex; justify-content:space-between; padding:0.6rem 0; border-bottom:1px solid #f3f4f6; font-size:0.875rem; }
+    /* Order summary */
+    .summary-card { background:white; border-radius:16px; padding:1.75rem; box-shadow:0 2px 16px rgba(0,0,0,0.06); }
+    .summary-card h2 { font-family:'Playfair Display',serif; font-size:1.25rem; color:var(--forest); margin-bottom:1.25rem; }
+    .summary-row { display:flex; justify-content:space-between; padding:0.65rem 0; border-bottom:1px solid #f3f4f6; font-size:0.875rem; }
     .summary-row:last-of-type { border:none; }
     .summary-row .lbl { color:#6b7280; }
     .summary-row .val { font-weight:600; color:var(--ink); }
     .summary-total { display:flex; justify-content:space-between; border-top:2px solid var(--mist); padding-top:0.85rem; margin-top:0.5rem; }
-    .summary-total .lbl { font-weight:700; color:var(--forest); }
-    .summary-total .val { font-family:'Playfair Display',serif; font-size:1.4rem; color:var(--forest); }
+    .summary-total .lbl { font-weight:700; font-size:1rem; color:var(--forest); }
+    .summary-total .val { font-family:'Playfair Display',serif; font-size:1.5rem; color:var(--forest); }
 
-    .error-msg { background:#fef2f2; border:1px solid #fecaca; color:#991b1b; padding:0.7rem 1rem; border-radius:6px; font-size:0.8rem; margin-top:0.25rem; }
+    .ref-badge { background:var(--cream); border-radius:8px; padding:0.65rem 1rem; font-family:'DM Mono',monospace; font-size:0.85rem; color:var(--forest); margin-top:1rem; text-align:center; letter-spacing:0.05em; }
 
-    @media(max-width:900px) { .details-layout { grid-template-columns:1fr; } .summary-card { position:static; } }
-    @media(max-width:540px) { .form-row { grid-template-columns:1fr; } }
+    /* Payment card */
+    .payment-card { background:white; border-radius:16px; padding:2rem; box-shadow:0 4px 30px rgba(0,0,0,0.08); position:sticky; top:88px; }
+    .payment-card h2 { font-family:'Playfair Display',serif; font-size:1.25rem; color:var(--forest); margin-bottom:0.4rem; }
+    .payment-card .subtitle { font-size:0.85rem; color:#6b7280; margin-bottom:1.5rem; }
+
+    .mpesa-badge { background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px; padding:1rem; text-align:center; margin-bottom:1.25rem; }
+    .mpesa-badge span { font-size:0.8rem; font-weight:700; color:#166534; letter-spacing:0.05em; }
+
+    .form-group { margin-bottom:1rem; }
+    .form-group label { display:block; font-size:0.7rem; font-weight:700; color:var(--fern); letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.4rem; }
+    .form-group input { width:100%; border:1.5px solid #e5e7eb; border-radius:8px; padding:0.75rem 1rem; font-size:1rem; font-family:'Jost',sans-serif; outline:none; transition:border-color 0.2s; }
+    .form-group input:focus { border-color:var(--fern); }
+
+    .btn-pay { width:100%; background:#00a651; color:white; border:none; cursor:pointer; padding:1rem; border-radius:10px; font-size:1rem; font-weight:700; font-family:'Jost',sans-serif; transition:background 0.2s; }
+    .btn-pay:hover { background:#008a44; }
+    .btn-pay:disabled { opacity:0.6; cursor:not-allowed; }
+
+    .status-msg { padding:0.9rem 1rem; border-radius:8px; margin-top:1rem; font-size:0.85rem; display:none; }
+    .status-msg.pending { background:#fef9c3; border:1px solid #fde68a; color:#92400e; }
+    .status-msg.success { background:#f0fdf4; border:1px solid #bbf7d0; color:#166534; }
+    .status-msg.error   { background:#fef2f2; border:1px solid #fecaca; color:#991b1b; }
+
+    @media(max-width:768px) { .payment-layout { grid-template-columns:1fr; } .payment-card { position:static; } }
 </style>
 @endpush
 
 @section('content')
 
 <div class="booking-hero">
-    <h1>Your Booking Details</h1>
+    <h1>Complete Your Payment</h1>
 </div>
 
 <div class="steps">
     <div class="step done"><span class="step-num">✓</span> Search</div>
     <div class="step-sep"></div>
-    <div class="step active"><span class="step-num">2</span> Details</div>
+    <div class="step done"><span class="step-num">✓</span> Details</div>
     <div class="step-sep"></div>
-    <div class="step"><span class="step-num">3</span> Pay</div>
+    <div class="step active"><span class="step-num">3</span> Pay</div>
     <div class="step-sep"></div>
     <div class="step"><span class="step-num">4</span> Confirm</div>
 </div>
 
-<section class="details-section">
+<section class="payment-section">
     <div class="container">
-        <div class="details-layout">
+        <div class="payment-layout">
 
-            {{-- Guest form --}}
-            <div class="form-card">
-                <h2>Guest Information</h2>
-
-                <form method="POST" action="{{ route('booking.reserve') }}">
-                    @csrf
-                    <input type="hidden" name="room_id"   value="{{ $room->id }}">
-                    <input type="hidden" name="check_in"  value="{{ $checkIn->toDateString() }}">
-                    <input type="hidden" name="check_out" value="{{ $checkOut->toDateString() }}">
-                    <input type="hidden" name="adults"    value="{{ $adults }}">
-                    <input type="hidden" name="children"  value="{{ $children }}">
-
-                    <div class="form-section-label">Personal Details</div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>First Name *</label>
-                            <input type="text" name="first_name" value="{{ old('first_name') }}" required>
-                            @error('first_name')<div class="error-msg">{{ $message }}</div>@enderror
-                        </div>
-                        <div class="form-group">
-                            <label>Last Name *</label>
-                            <input type="text" name="last_name" value="{{ old('last_name') }}" required>
-                            @error('last_name')<div class="error-msg">{{ $message }}</div>@enderror
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Email Address *</label>
-                            <input type="email" name="email" value="{{ old('email') }}" required>
-                            @error('email')<div class="error-msg">{{ $message }}</div>@enderror
-                        </div>
-                        <div class="form-group">
-                            <label>Phone Number *</label>
-                            <input type="tel" name="phone" value="{{ old('phone') }}" required placeholder="+254 7XX XXX XXX">
-                            @error('phone')<div class="error-msg">{{ $message }}</div>@enderror
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Nationality</label>
-                            <input type="text" name="nationality" value="{{ old('nationality') }}" placeholder="Kenyan">
-                        </div>
-                        <div class="form-group">
-                            <label>ID / Passport No.</label>
-                            <input type="text" name="id_number" value="{{ old('id_number') }}">
-                        </div>
-                    </div>
-
-                    <div class="form-section-label">Stay Preferences</div>
-                    <div class="form-group">
-                        <label>Special Requests</label>
-                        <textarea name="special_requests" rows="3" placeholder="Early check-in, dietary requirements, accessibility needs…">{{ old('special_requests') }}</textarea>
-                    </div>
-
-                    <div class="form-section-label">Terms</div>
-                    <div class="form-group">
-                        <div class="checkbox-group">
-                            <input type="checkbox" name="agree_terms" id="agreeTerms" value="1" required @checked(old('agree_terms'))>
-                            <label for="agreeTerms">I agree to the cancellation policy — free cancellation up to 24 hours before check-in. Late cancellations may be charged one night's fee.</label>
-                        </div>
-                        @error('agree_terms')<div class="error-msg">{{ $message }}</div>@enderror
-                    </div>
-
-                    <button type="submit" class="btn-reserve">Continue to Payment</button>
-                </form>
+            {{-- Summary --}}
+            <div class="summary-card">
+                <h2>Booking Summary</h2>
+                <div class="summary-row"><span class="lbl">Guest</span><span class="val">{{ $booking->guest->first_name }} {{ $booking->guest->last_name }}</span></div>
+                <div class="summary-row"><span class="lbl">Room</span><span class="val">{{ $booking->room->roomType->name }} · Room {{ $booking->room->room_number }}</span></div>
+                <div class="summary-row"><span class="lbl">Check-in</span><span class="val">{{ \Carbon\Carbon::parse($booking->check_in)->format('D, M j Y') }}</span></div>
+                <div class="summary-row"><span class="lbl">Check-out</span><span class="val">{{ \Carbon\Carbon::parse($booking->check_out)->format('D, M j Y') }}</span></div>
+                <div class="summary-row"><span class="lbl">Nights</span><span class="val">{{ \Carbon\Carbon::parse($booking->check_in)->diffInDays($booking->check_out) }}</span></div>
+                <div class="summary-row"><span class="lbl">Guests</span><span class="val">{{ $booking->adults }} adult{{ $booking->adults !== 1 ? 's' : '' }}{{ $booking->children ? ", {$booking->children} child" . ($booking->children !== 1 ? 'ren' : '') : '' }}</span></div>
+                <div class="summary-row"><span class="lbl">Subtotal</span><span class="val">KES {{ number_format($booking->subtotal ?? $booking->total_amount) }}</span></div>
+                <div class="summary-row"><span class="lbl">VAT (16%)</span><span class="val">KES {{ number_format($booking->tax_amount ?? 0) }}</span></div>
+                <div class="summary-total">
+                    <span class="lbl">Total Due</span>
+                    <span class="val">KES {{ number_format($booking->total_amount) }}</span>
+                </div>
+                <div class="ref-badge">Ref: {{ $booking->booking_ref }}</div>
             </div>
 
-            {{-- Summary sidebar --}}
-            <div>
-                <div class="summary-card">
-                    <h3>Booking Summary</h3>
-                    <div class="room-thumb">🛏</div>
-                    <div class="room-name">{{ $room->roomType->name }}</div>
-                    <div class="room-sub">Room {{ $room->room_number }}@if($room->floor) · Floor {{ $room->floor }}@endif</div>
+            {{-- Payment --}}
+            <div class="payment-card">
+                <h2>Pay via M-Pesa</h2>
+                <p class="subtitle">Enter your Safaricom number to receive an STK push prompt.</p>
 
-                    <div class="summary-row"><span class="lbl">Check-in</span><span class="val">{{ $checkIn->format('D, M j Y') }}</span></div>
-                    <div class="summary-row"><span class="lbl">Check-out</span><span class="val">{{ $checkOut->format('D, M j Y') }}</span></div>
-                    <div class="summary-row"><span class="lbl">Duration</span><span class="val">{{ $nights }} night{{ $nights !== 1 ? 's' : '' }}</span></div>
-                    <div class="summary-row"><span class="lbl">Guests</span><span class="val">{{ $adults }} adult{{ $adults !== 1 ? 's' : '' }}{{ $children ? ", {$children} child" . ($children !== 1 ? 'ren' : '') : '' }}</span></div>
-                    <div class="summary-row"><span class="lbl">Room rate</span><span class="val">KES {{ number_format($costs['price_per_night']) }} / night</span></div>
-                    <div class="summary-row"><span class="lbl">Subtotal</span><span class="val">KES {{ number_format($costs['subtotal']) }}</span></div>
-                    <div class="summary-row"><span class="lbl">VAT (16%)</span><span class="val">KES {{ number_format($costs['tax']) }}</span></div>
-                    <div class="summary-total">
-                        <span class="lbl">Total</span>
-                        <span class="val">KES {{ number_format($costs['total']) }}</span>
-                    </div>
+                <div class="mpesa-badge">
+                    <span>🟢 Lipa Na M-Pesa · Secure Payment</span>
                 </div>
+
+                <div class="form-group">
+                    <label>M-Pesa Phone Number</label>
+                    <input type="tel" id="mpesaPhone" placeholder="0712 345 678" value="{{ $booking->guest->phone }}">
+                </div>
+
+                <button class="btn-pay" id="payBtn" onclick="initiatePay()">
+                    Pay KES {{ number_format($booking->total_amount) }}
+                </button>
+
+                <div class="status-msg pending" id="statusPending">
+                    ⏳ STK push sent to your phone. Enter your M-Pesa PIN to complete payment…
+                </div>
+                <div class="status-msg success" id="statusSuccess">
+                    ✅ Payment confirmed! Redirecting to your booking confirmation…
+                </div>
+                <div class="status-msg error" id="statusError"></div>
+
+                <p style="text-align:center;font-size:0.75rem;color:#9ca3af;margin-top:1rem;">
+                    🔒 Secure payment powered by Safaricom M-Pesa Daraja API
+                </p>
+
+                @if(!app()->isProduction())
+                <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px dashed #e5e7eb;">
+                    <p style="font-size:0.72rem;color:#9ca3af;text-align:center;margin-bottom:0.75rem;">⚙️ DEV MODE — Skip M-Pesa</p>
+                    <a href="{{ route('booking.pay.test', $booking) }}"
+                       style="display:block;text-align:center;background:#f3f4f6;color:#6b7280;padding:0.75rem;border-radius:8px;font-size:0.8rem;font-weight:600;text-decoration:none;transition:background 0.2s;"
+                       onmouseover="this.style.background='#e5e7eb'" onmouseout="this.style.background='#f3f4f6'">
+                        Simulate Successful Payment →
+                    </a>
+                </div>
+                @endif
             </div>
 
         </div>
@@ -169,3 +142,60 @@
 </section>
 
 @endsection
+
+@push('scripts')
+<script>
+async function initiatePay() {
+    const phone = document.getElementById('mpesaPhone').value.trim();
+    const btn   = document.getElementById('payBtn');
+    if (!phone) { alert('Please enter your M-Pesa phone number.'); return; }
+
+    btn.disabled = true; btn.textContent = 'Sending STK push…';
+    showStatus('pending');
+
+    const res  = await fetch('{{ route("booking.pay.mpesa", $booking) }}', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+        body: JSON.stringify({ phone }),
+    });
+    const data = await res.json();
+
+    if (data.success) {
+        btn.textContent = 'Waiting for payment…';
+        pollPayment();
+    } else {
+        showStatus('error', data.message || 'Payment failed. Please try again.');
+        btn.disabled = false;
+        btn.textContent = 'Pay KES {{ number_format($booking->total_amount) }}';
+    }
+}
+
+async function pollPayment() {
+    for (let i = 0; i < 24; i++) {
+        await new Promise(r => setTimeout(r, 5000));
+        const res  = await fetch('{{ route("booking.pay.mpesa.poll", $booking) }}');
+        const data = await res.json();
+        if (data.status === 'completed') {
+            showStatus('success');
+            setTimeout(() => { window.location.href = '{{ route("booking.confirmation", $booking) }}'; }, 1500);
+            return;
+        }
+        if (data.status === 'failed') {
+            showStatus('error', 'Payment failed. Please try again.');
+            const btn = document.getElementById('payBtn');
+            btn.disabled = false;
+            btn.textContent = 'Pay KES {{ number_format($booking->total_amount) }}';
+            return;
+        }
+    }
+    showStatus('error', 'Payment timed out. If you completed the payment, contact us with reference: {{ $booking->booking_ref }}');
+}
+
+function showStatus(type, msg) {
+    ['Pending','Success','Error'].forEach(t => document.getElementById('status' + t).style.display = 'none');
+    const el = document.getElementById('status' + type.charAt(0).toUpperCase() + type.slice(1));
+    if (msg) el.textContent = msg;
+    el.style.display = 'block';
+}
+</script>
+@endpush
