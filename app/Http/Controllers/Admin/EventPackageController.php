@@ -29,9 +29,12 @@ class EventPackageController extends Controller
             'starting_price' => 'required|numeric|min:0',
             'min_guests'     => 'required|integer|min:1',
             'max_guests'     => 'required|integer|min:1',
-            'inclusions'     => 'nullable|array',
+            'inclusions_text'=> 'nullable|string',
             'is_active'      => 'boolean',
         ]);
+
+        $data['inclusions'] = array_filter(array_map('trim', explode("\n", $data['inclusions_text'] ?? '')));
+        unset($data['inclusions_text']);
 
         EventPackage::create($data);
 
@@ -52,9 +55,12 @@ class EventPackageController extends Controller
             'starting_price' => 'required|numeric|min:0',
             'min_guests'     => 'required|integer|min:1',
             'max_guests'     => 'required|integer|min:1',
-            'inclusions'     => 'nullable|array',
+            'inclusions_text'=> 'nullable|string',
             'is_active'      => 'boolean',
         ]);
+
+        $data['inclusions'] = array_filter(array_map('trim', explode("\n", $data['inclusions_text'] ?? '')));
+        unset($data['inclusions_text']);
 
         $package->update($data);
 

@@ -15,6 +15,13 @@ use App\Http\Controllers\{
     MpesaCallbackController,
 };
 
+// ── Auth ───────────────────────────────────────────────────
+Route::middleware('guest')->group(function () {
+    Route::get('/login',  [\App\Http\Controllers\Auth\LoginController::class, 'showForm'])->name('login');
+    Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'login']);
+});
+Route::post('/logout', [\App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout')->middleware('auth');
+
 // ── Home & Static Pages ────────────────────────────────────
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/rooms', [HomeController::class, 'rooms'])->name('rooms');

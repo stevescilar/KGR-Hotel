@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400&family=Jost:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     {{-- Styles --}}
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
     @stack('styles')
 
     <style>
@@ -24,6 +24,8 @@
         .font-display { font-family: 'Playfair Display', serif; }
         .font-mono-kgr { font-family: 'DM Mono', monospace; }
     </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="h-full bg-gray-50">
 
