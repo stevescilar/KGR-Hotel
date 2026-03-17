@@ -27,6 +27,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/rooms', [HomeController::class, 'rooms'])->name('rooms');
 Route::get('/rooms/{roomType:slug}', [HomeController::class, 'roomType'])->name('rooms.show');
 Route::get('/food-drinks', [MenuController::class, 'index'])->name('menu');
+Route::get('/menu', [MenuController::class, 'mobile'])->name('menu.mobile');   // QR code target
 Route::get('/events', [EventController::class, 'index'])->name('events');
 Route::get('/contact',  [HomeController::class, 'contact'])->name('contact');
 Route::post('/contact', [HomeController::class, 'contactSubmit'])->name('contact.submit');

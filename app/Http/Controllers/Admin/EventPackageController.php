@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\EventPackage;
 use Illuminate\Http\{Request, RedirectResponse};
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Storage;
 
 class EventPackageController extends Controller
 {
@@ -23,18 +24,24 @@ class EventPackageController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'name'           => 'required|string|max:100',
-            'slug'           => 'required|string|unique:event_packages,slug',
-            'description'    => 'nullable|string',
-            'starting_price' => 'required|numeric|min:0',
-            'min_guests'     => 'required|integer|min:1',
-            'max_guests'     => 'required|integer|min:1',
-            'inclusions_text'=> 'nullable|string',
-            'is_active'      => 'boolean',
+            'name'            => 'required|string|max:100',
+            'slug'            => 'required|string|unique:event_packages,slug',
+            'description'     => 'nullable|string',
+            'starting_price'  => 'required|numeric|min:0',
+            'price_per_person'=> 'nullable|numeric|min:0',
+            'min_guests'      => 'required|integer|min:1',
+            'max_guests'      => 'required|integer|min:1',
+            'inclusions_text' => 'nullable|string',
+            'is_active'       => 'boolean',
+            'image'           => 'nullable|image|max:4096',
         ]);
 
-        $data['inclusions'] = array_filter(array_map('trim', explode("\n", $data['inclusions_text'] ?? '')));
+        $data['inclusions'] = array_values(array_filter(array_map('trim', explode("\n", $data['inclusions_text'] ?? ''))));
         unset($data['inclusions_text']);
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('events', 'public');
+        }
 
         EventPackage::create($data);
 
@@ -50,17 +57,24 @@ class EventPackageController extends Controller
     public function update(Request $request, EventPackage $package): RedirectResponse
     {
         $data = $request->validate([
-            'name'           => 'required|string|max:100',
-            'description'    => 'nullable|string',
-            'starting_price' => 'required|numeric|min:0',
-            'min_guests'     => 'required|integer|min:1',
-            'max_guests'     => 'required|integer|min:1',
-            'inclusions_text'=> 'nullable|string',
-            'is_active'      => 'boolean',
+            'name'            => 'required|string|max:100',
+            'description'     => 'nullable|string',
+            'starting_price'  => 'required|numeric|min:0',
+            'price_per_person'=> 'nullable|numeric|min:0',
+            'min_guests'      => 'required|integer|min:1',
+            'max_guests'      => 'required|integer|min:1',
+            'inclusions_text' => 'nullable|string',
+            'is_active'       => 'boolean',
+            'image'           => 'nullable|image|max:4096',
         ]);
 
-        $data['inclusions'] = array_filter(array_map('trim', explode("\n", $data['inclusions_text'] ?? '')));
+        $data['inclusions'] = array_values(array_filter(array_map('trim', explode("\n", $data['inclusions_text'] ?? ''))));
         unset($data['inclusions_text']);
+
+        if ($request->hasFile('image')) {
+            if ($package->image) Storage::disk('public')->delete($package->image);
+            $data['image'] = $request->file('image')->store('events', 'public');
+        }
 
         $package->update($data);
 
@@ -73,10 +87,8 @@ class EventPackageController extends Controller
         if ($package->bookings()->whereIn('status', ['confirmed', 'completed'])->exists()) {
             return back()->with('error', 'Cannot delete a package with confirmed bookings.');
         }
-
+        if ($package->image) Storage::disk('public')->delete($package->image);
         $package->delete();
-
-        return redirect()->route('admin.events.packages.index')
-            ->with('success', 'Package deleted.');
+        return redirect()->route('admin.events.packages.index')->with('success', 'Package deleted.');
     }
 }

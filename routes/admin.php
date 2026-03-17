@@ -47,8 +47,18 @@ Route::prefix('admin')
         // ── Rooms ──────────────────────────────────────────
         Route::prefix('rooms')->name('rooms.')->group(function () {
             Route::get('/', [RoomController::class, 'index'])->name('index');
-            Route::get('/housekeeper', [RoomController::class, 'housekeeper'])->name('housekeeper');
+            Route::get('/create', [RoomController::class, 'create'])->name('create');
+            Route::post('/', [RoomController::class, 'store'])->name('store');
+            Route::get('/{room}/edit', [RoomController::class, 'edit'])->name('edit');
+            Route::put('/{room}', [RoomController::class, 'update'])->name('update');
+            Route::delete('/{room}', [RoomController::class, 'destroy'])->name('destroy');
             Route::patch('/{room}/status', [RoomController::class, 'updateStatus'])->name('status');
+            Route::get('/housekeeper', [RoomController::class, 'housekeeper'])->name('housekeeper');
+            // Walk-in
+            Route::get('/walk-in', [RoomController::class, 'walkIn'])->name('walk-in');
+            Route::post('/walk-in', [RoomController::class, 'storeWalkIn'])->name('walk-in.store');
+            Route::get('/walk-in/{booking}/receipt', [RoomController::class, 'walkInReceipt'])->name('walk-in.receipt');
+            // Room Types
             Route::resource('types', RoomTypeController::class);
         });
 
@@ -62,6 +72,8 @@ Route::prefix('admin')
             Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
             Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.status');
             Route::resource('menu', MenuController::class);
+            Route::get('menu-categories/create', [MenuController::class, 'createCategory'])->name('menu.categories.create');
+            Route::post('menu-categories', [MenuController::class, 'storeCategory'])->name('menu.categories.store');
             Route::get('reservations', [TableController::class, 'reservations'])->name('reservations');
             Route::resource('tables', TableController::class);
         });

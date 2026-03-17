@@ -298,7 +298,65 @@
             Buy Day Ticket
         </a>
     </section>
+    {{--
+    ══════════════════════════════════════════════════════
+    ADD THIS SECTION TO home.blade.php
+    Paste it just before the closing @endsection tag
+    ══════════════════════════════════════════════════════
+--}}
 
+{{-- ── Menu QR Section ──────────────────────────────────────── --}}
+<section style="background:var(--forest);padding:5rem 0;">
+    <div class="container">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;max-width:900px;margin:0 auto;">
+
+            {{-- Text side --}}
+            <div style="color:white;">
+                <span style="font-size:0.7rem;font-weight:700;letter-spacing:0.25em;text-transform:uppercase;color:var(--amber);display:block;margin-bottom:0.75rem;">
+                    Scan & Explore
+                </span>
+                <h2 style="font-family:'Playfair Display',serif;font-size:clamp(1.75rem,3vw,2.5rem);font-weight:400;margin-bottom:1rem;">
+                    Our Food & Drinks Menu
+                </h2>
+                <p style="color:rgba(255,255,255,0.7);line-height:1.8;margin-bottom:1.5rem;">
+                    Scan the QR code with your phone to browse our full menu — from breakfast to cocktails, all crafted with fresh local ingredients.
+                </p>
+                <a href="{{ route('menu.mobile') }}"
+                   style="display:inline-flex;align-items:center;gap:0.5rem;background:var(--gold);color:white;padding:0.75rem 1.75rem;border-radius:8px;font-size:0.85rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;transition:background 0.2s;">
+                    View Full Menu →
+                </a>
+            </div>
+
+            {{-- QR side --}}
+            <div style="display:flex;flex-direction:column;align-items:center;gap:1rem;">
+                <div style="background:white;padding:1.25rem;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.2);">
+                    {{-- QR code generated via Google Charts API --}}
+                    @php
+                        $menuUrl = url('/menu');
+                        $qrUrl   = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($menuUrl) . '&bgcolor=ffffff&color=1e3a2f&margin=10';
+                    @endphp
+                    <img src="{{ $qrUrl }}"
+                         alt="Scan for menu"
+                         width="200" height="200"
+                         style="display:block;border-radius:8px;">
+                </div>
+                <p style="color:rgba(255,255,255,0.6);font-size:0.8rem;text-align:center;">
+                    Point your camera at the code<br>to open the menu on your phone
+                </p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+@push('styles')
+<style>
+@media(max-width:640px) {
+    /* Stack QR section vertically on mobile */
+    #qr-section-grid { grid-template-columns: 1fr !important; }
+}
+</style>
+@endpush
 @endsection
 
 @push('scripts')
