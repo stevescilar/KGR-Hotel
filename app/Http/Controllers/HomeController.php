@@ -3,14 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Models\{RoomType, EventPackage};
+use Illuminate\Http\{Request, RedirectResponse};
 use Illuminate\View\View;
 
 class HomeController extends Controller
 {
     public function index(): View
     {
-        $roomTypes      = RoomType::where('is_active', true)->orderBy('sort_order')->get();
-        $eventPackages  = EventPackage::where('is_active', true)->take(3)->get();
+        $roomTypes   = RoomType::where('is_active', true)
+            ->withCount('rooms')
+            ->orderBy('sort_order')
+            ->take(3)
+            ->get();
+
+        $eventPackages = EventPackage::where('is_active', true)
+            ->take(3)
+            ->get();
 
         return view('public.home', compact('roomTypes', 'eventPackages'));
     }
@@ -18,7 +26,7 @@ class HomeController extends Controller
     public function rooms(): View
     {
         $roomTypes = RoomType::where('is_active', true)
-            ->withCount('rooms')
+            ->withCount(['rooms' => fn($q) => $q->where('status', 'available')])
             ->orderBy('sort_order')
             ->get();
 
@@ -29,19 +37,37 @@ class HomeController extends Controller
     {
         abort_unless($roomType->is_active, 404);
 
-        $roomType->load('pricingRules');
+        $roomType->loadCount('rooms');
 
-        $related = RoomType::where('is_active', true)
+        $relatedTypes = RoomType::where('is_active', true)
             ->where('id', '!=', $roomType->id)
             ->orderBy('sort_order')
-            ->take(2)
+            ->take(3)
             ->get();
 
-        return view('public.rooms.show', compact('roomType', 'related'));
+        return view('public.rooms.show', [
+            'roomType'     => $roomType,
+            'relatedTypes' => $relatedTypes,
+        ]);
     }
 
     public function contact(): View
     {
         return view('public.contact');
+    }
+
+    public function contactSubmit(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'first_name' => 'required|string|max:80',
+            'last_name'  => 'required|string|max:80',
+            'email'      => 'required|email',
+            'subject'    => 'required|string',
+            'message'    => 'required|string|max:3000',
+        ]);
+
+        \Illuminate\Support\Facades\Log::info('Contact form submission', $request->only(['first_name','last_name','email','subject','message']));
+
+        return back()->with('success', "Thank you! Your message has been received. We'll get back to you within 24 hours.");
     }
 }
