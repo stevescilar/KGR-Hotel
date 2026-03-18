@@ -18,7 +18,6 @@
     .details-section { background:var(--cream); padding:4rem 0 5rem; }
     .details-layout { display:grid; grid-template-columns:1fr 360px; gap:2.5rem; align-items:start; }
 
-    /* Guest form */
     .form-card { background:white; border-radius:16px; padding:2rem; box-shadow:0 2px 16px rgba(0,0,0,0.06); }
     .form-card h2 { font-family:'Playfair Display',serif; font-size:1.25rem; color:var(--forest); margin-bottom:1.5rem; }
     .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
@@ -30,15 +29,16 @@
     .checkbox-group { display:flex; align-items:flex-start; gap:0.65rem; }
     .checkbox-group input[type=checkbox] { width:auto; margin-top:0.2rem; flex-shrink:0; }
     .checkbox-group label { font-size:0.85rem; color:#4b5563; font-weight:400; letter-spacing:normal; text-transform:none; }
-
     .btn-reserve { width:100%; background:var(--forest); color:white; border:none; cursor:pointer; padding:1rem; border-radius:10px; font-size:0.95rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; font-family:'Jost',sans-serif; margin-top:1rem; transition:background 0.2s; }
     .btn-reserve:hover { background:var(--moss); }
+    .error-msg { background:#fef2f2; border:1px solid #fecaca; color:#991b1b; padding:0.7rem 1rem; border-radius:6px; font-size:0.8rem; margin-top:0.25rem; }
 
     /* Summary sidebar */
-    .summary-card { background:white; border-radius:16px; padding:1.75rem; box-shadow:0 4px 24px rgba(0,0,0,0.08); position:sticky; top:88px; }
-    .summary-card h3 { font-family:'Playfair Display',serif; font-size:1.15rem; color:var(--forest); margin-bottom:1.25rem; }
-    .room-thumb { height:140px; background:var(--warm); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:3rem; margin-bottom:1.25rem; background-size:cover; background-position:center; }
-    .room-name { font-family:'Playfair Display',serif; font-size:1.1rem; color:var(--forest); margin-bottom:0.25rem; }
+    .summary-card { background:white; border-radius:16px; overflow:hidden; box-shadow:0 4px 24px rgba(0,0,0,0.08); position:sticky; top:88px; }
+    .room-hero-img { width:100%; height:200px; object-fit:cover; display:block; }
+    .room-hero-placeholder { width:100%; height:200px; background:linear-gradient(135deg, var(--forest), var(--moss)); display:flex; align-items:center; justify-content:center; font-size:4rem; }
+    .summary-body { padding:1.5rem; }
+    .room-name { font-family:'Playfair Display',serif; font-size:1.15rem; color:var(--forest); margin-bottom:0.25rem; }
     .room-sub { font-size:0.82rem; color:#6b7280; margin-bottom:1.25rem; }
     .summary-row { display:flex; justify-content:space-between; padding:0.6rem 0; border-bottom:1px solid #f3f4f6; font-size:0.875rem; }
     .summary-row:last-of-type { border:none; }
@@ -47,8 +47,6 @@
     .summary-total { display:flex; justify-content:space-between; border-top:2px solid var(--mist); padding-top:0.85rem; margin-top:0.5rem; }
     .summary-total .lbl { font-weight:700; color:var(--forest); }
     .summary-total .val { font-family:'Playfair Display',serif; font-size:1.4rem; color:var(--forest); }
-
-    .error-msg { background:#fef2f2; border:1px solid #fecaca; color:#991b1b; padding:0.7rem 1rem; border-radius:6px; font-size:0.8rem; margin-top:0.25rem; }
 
     @media(max-width:900px) { .details-layout { grid-template-columns:1fr; } .summary-card { position:static; } }
     @media(max-width:540px) { .form-row { grid-template-columns:1fr; } }
@@ -145,21 +143,57 @@
             {{-- Summary sidebar --}}
             <div>
                 <div class="summary-card">
-                    <h3>Booking Summary</h3>
-                    <div class="room-thumb">🛏</div>
-                    <div class="room-name">{{ $room->roomType->name }}</div>
-                    <div class="room-sub">Room {{ $room->room_number }}@if($room->floor) · Floor {{ $room->floor }}@endif</div>
 
-                    <div class="summary-row"><span class="lbl">Check-in</span><span class="val">{{ $checkIn->format('D, M j Y') }}</span></div>
-                    <div class="summary-row"><span class="lbl">Check-out</span><span class="val">{{ $checkOut->format('D, M j Y') }}</span></div>
-                    <div class="summary-row"><span class="lbl">Duration</span><span class="val">{{ $nights }} night{{ $nights !== 1 ? 's' : '' }}</span></div>
-                    <div class="summary-row"><span class="lbl">Guests</span><span class="val">{{ $adults }} adult{{ $adults !== 1 ? 's' : '' }}{{ $children ? ", {$children} child" . ($children !== 1 ? 'ren' : '') : '' }}</span></div>
-                    <div class="summary-row"><span class="lbl">Room rate</span><span class="val">KES {{ number_format($costs['nights'] > 0 ? $costs['subtotal'] / $costs['nights'] : 0) }} / night</span></div>
-                    <div class="summary-row"><span class="lbl">Subtotal</span><span class="val">KES {{ number_format($costs['subtotal']) }}</span></div>
-                    <div class="summary-row"><span class="lbl">VAT (16%)</span><span class="val">KES {{ number_format($costs['tax']) }}</span></div>
-                    <div class="summary-total">
-                        <span class="lbl">Total</span>
-                        <span class="val">KES {{ number_format($costs['total']) }}</span>
+                    {{-- Room image --}}
+                    @php
+                        $fallbackImages = [
+                            'standard'            => 'https://static.wixstatic.com/media/87c8f7_93a0afa668464496a6f8636744e86fc4~mv2.jpg/v1/fill/w_800,h_500,al_c,q_85/87c8f7_93a0afa668464496a6f8636744e86fc4~mv2.jpg',
+                            'deluxe'              => 'https://static.wixstatic.com/media/87c8f7_a8fdf9b4baa3478d8bcbf501772e7b9d~mv2.jpg/v1/fill/w_800,h_500,al_c,q_85/87c8f7_a8fdf9b4baa3478d8bcbf501772e7b9d~mv2.jpg',
+                            'penthouse'           => 'https://static.wixstatic.com/media/87c8f7_ae6b2ce224f54eff8127c7e9fe0e7266~mv2.jpg/v1/fill/w_800,h_500,al_c,q_80/87c8f7_ae6b2ce224f54eff8127c7e9fe0e7266~mv2.jpg',
+                            'presidential-family' => 'https://static.wixstatic.com/media/87c8f7_953ad41ed0c1461d89a835b7c51270e2~mv2.jpg/v1/fill/w_800,h_500,al_c,q_85/87c8f7_953ad41ed0c1461d89a835b7c51270e2~mv2.jpg',
+                            'royal-presidential'  => 'https://static.wixstatic.com/media/87c8f7_f9c30fa9dbce489b9b7b7920acb5a8a9~mv2.jpg/v1/fill/w_800,h_500,al_c,q_85/87c8f7_f9c30fa9dbce489b9b7b7920acb5a8a9~mv2.jpg',
+                        ];
+                        $roomType = $room->roomType;
+                        $heroImg  = null;
+                        if (!empty($roomType->images) && count($roomType->images)) {
+                            $heroImg = Storage::url($roomType->images[0]);
+                        } elseif ($room->image) {
+                            $heroImg = Storage::url($room->image);
+                        } elseif (isset($fallbackImages[$roomType->slug])) {
+                            $heroImg = $fallbackImages[$roomType->slug];
+                        }
+                    @endphp
+
+                    @if($heroImg)
+                        <img src="{{ $heroImg }}" alt="{{ $roomType->name }}" class="room-hero-img">
+                    @else
+                        <div class="room-hero-placeholder">🛏</div>
+                    @endif
+
+                    <div class="summary-body">
+                        <div class="room-name">{{ $roomType->name }}</div>
+                        <div class="room-sub">
+                            Room {{ $room->room_number }}@if($room->floor) · Floor {{ $room->floor }}@endif
+                            @if($room->cottage) · {{ $room->cottage }}@endif
+                        </div>
+
+                        <div class="summary-row"><span class="lbl">Check-in</span><span class="val">{{ $checkIn->format('D, M j Y') }}</span></div>
+                        <div class="summary-row"><span class="lbl">Check-out</span><span class="val">{{ $checkOut->format('D, M j Y') }}</span></div>
+                        <div class="summary-row"><span class="lbl">Duration</span><span class="val">{{ $nights }} night{{ $nights !== 1 ? 's' : '' }}</span></div>
+                        <div class="summary-row">
+                            <span class="lbl">Guests</span>
+                            <span class="val">{{ $adults }} adult{{ $adults !== 1 ? 's' : '' }}{{ $children ? ', '.$children.' child'.($children !== 1 ? 'ren' : '') : '' }}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="lbl">Room rate</span>
+                            <span class="val">KES {{ number_format($costs['nights'] > 0 ? $costs['subtotal'] / $costs['nights'] : 0) }} / night</span>
+                        </div>
+                        <div class="summary-row"><span class="lbl">Subtotal</span><span class="val">KES {{ number_format($costs['subtotal']) }}</span></div>
+                        <div class="summary-row"><span class="lbl">VAT (16%)</span><span class="val">KES {{ number_format($costs['tax']) }}</span></div>
+                        <div class="summary-total">
+                            <span class="lbl">Total</span>
+                            <span class="val">KES {{ number_format($costs['total']) }}</span>
+                        </div>
                     </div>
                 </div>
             </div>

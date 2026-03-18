@@ -46,13 +46,13 @@
     .room-result {
         background:white; border-radius:14px; overflow:hidden;
         box-shadow:0 2px 14px rgba(0,0,0,0.06); margin-bottom:1rem;
-        display:grid; grid-template-columns:180px 1fr auto; gap:0;
-        transition:box-shadow 0.2s;
+        display:grid; grid-template-columns:260px 1fr auto; gap:0;
+        transition:box-shadow 0.2s; min-height:160px;
     }
     .room-result:hover { box-shadow:0 6px 24px rgba(0,0,0,0.1); }
     .room-result.highlighted { border:2px solid var(--gold); }
-    .result-img { width:180px; height:140px; object-fit:cover; }
-    .result-img-placeholder { width:180px; height:140px; background:linear-gradient(135deg,var(--forest),var(--moss)); display:flex; align-items:center; justify-content:center; font-size:2.5rem; }
+    .result-img { width:260px; height:100%; object-fit:cover; display:block; min-height:160px; }
+    .result-img-placeholder { width:260px; min-height:160px; background:linear-gradient(135deg,var(--forest),var(--moss)); display:flex; align-items:center; justify-content:center; font-size:2.5rem; }
     .result-body { padding:1.25rem 1.5rem; display:flex; flex-direction:column; justify-content:center; }
     .result-name { font-family:'Playfair Display',serif; font-size:1.15rem; color:var(--forest); margin-bottom:0.35rem; }
     .result-meta { display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:0.75rem; }
@@ -72,7 +72,7 @@
     @keyframes spin { to { transform:rotate(360deg); } }
 
     @media(max-width:900px) { .search-layout { grid-template-columns:1fr; } .search-card { position:static; } }
-    @media(max-width:600px) { .room-result { grid-template-columns:1fr; } .result-img, .result-img-placeholder { width:100%; height:200px; } .result-price-col { border-left:none; border-top:1px solid #f3f4f6; align-items:flex-start; flex-direction:row; justify-content:space-between; align-items:center; } }
+    @media(max-width:640px) { .room-result { grid-template-columns:1fr; } .result-img, .result-img-placeholder { width:100%; height:220px; } .result-price-col { border-left:none; border-top:1px solid #f3f4f6; flex-direction:row; justify-content:space-between; align-items:center; } }
 </style>
 @endpush
 
