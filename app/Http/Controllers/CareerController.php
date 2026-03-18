@@ -22,13 +22,13 @@ class CareerController extends Controller
 
     public function show(JobListing $job): View
     {
-        abort_unless($job->is_open, 404);
+        abort_unless($job->is_active, 404);
         return view('public.careers.show', compact('job'));
     }
 
     public function apply(JobListing $job, Request $request): RedirectResponse
     {
-        abort_unless($job->is_open, 410);
+        abort_unless($job->is_active, 410);
 
         $request->validate([
             'first_name'   => 'required|string|max:80',
@@ -40,9 +40,8 @@ class CareerController extends Controller
             'message'      => 'nullable|string|max:2000',
         ]);
 
-        // Store uploaded files
-        $cvPath           = $request->file('cv')->store('applications/cvs', 'private');
-        $coverLetterPath  = $request->file('cover_letter')?->store('applications/cover-letters', 'private');
+        $cvPath          = $request->file('cv')->store('applications/cvs', 'private');
+        $coverLetterPath = $request->file('cover_letter')?->store('applications/cover-letters', 'private');
 
         $application = JobApplication::create([
             'job_listing_id'    => $job->id,
@@ -56,11 +55,12 @@ class CareerController extends Controller
             'status'            => 'received',
         ]);
 
-        // Confirmation SMS
-        app(SmsService::class)->send(
-            $request->phone,
-            "Hi {$request->first_name}! We've received your application for {$job->title} at Kitonga Garden Resort. Ref: {$application->reference}. We'll be in touch soon."
-        );
+        try {
+            app(SmsService::class)->send(
+                $request->phone,
+                "Hi {$request->first_name}! We've received your application for {$job->title} at Kitonga Garden Resort. Ref: {$application->reference}. We'll be in touch soon."
+            );
+        } catch (\Exception $e) {}
 
         return back()->with('success', "Application submitted! Reference: {$application->reference}. We'll review and get back to you.");
     }

@@ -11,13 +11,19 @@ class EventController extends Controller
 {
     public function index(): View
     {
-        $packages = EventPackage::where('is_active', true)->get();
+        $packages = EventPackage::where('is_active', true)
+            ->orderBy('starting_price')
+            ->get();
+
         return view('public.events.index', compact('packages'));
     }
 
     public function packages(): View
     {
-        $packages = EventPackage::where('is_active', true)->get();
+        $packages = EventPackage::where('is_active', true)
+            ->orderBy('starting_price')
+            ->get();
+
         return view('public.events.packages', compact('packages'));
     }
 
@@ -46,11 +52,12 @@ class EventController extends Controller
             'status'           => 'inquiry',
         ]);
 
-        // SMS to client
-        app(SmsService::class)->send(
-            $request->contact_phone,
-            "Hi {$request->contact_name}! We've received your event inquiry (Ref: {$booking->reference}). Our team will contact you within 24 hours. Kitonga Garden Resort."
-        );
+        try {
+            app(SmsService::class)->send(
+                $request->contact_phone,
+                "Hi {$request->contact_name}! We've received your event inquiry (Ref: {$booking->reference}). Our team will contact you within 24 hours. Kitonga Garden Resort."
+            );
+        } catch (\Exception $e) {}
 
         return back()->with('success', "Thank you! Your inquiry has been submitted. Reference: {$booking->reference}. We'll be in touch within 24 hours.");
     }

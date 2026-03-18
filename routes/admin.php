@@ -14,8 +14,7 @@ use App\Http\Controllers\Admin\{
     TableController,
     EventsController,
     EventPackageController,
-    GateTicketController,
-    GiftCardController,
+    GateTicketController,    GiftCardController,
     JobListingController,
     JobApplicationController,
     ReportsController,
@@ -91,6 +90,7 @@ Route::prefix('admin')
             Route::get('/', [GateTicketController::class, 'index'])->name('index');
             Route::get('/scan', [GateTicketController::class, 'scan'])->name('scan');
             Route::post('/scan', [GateTicketController::class, 'processQr'])->name('scan.process');
+            Route::resource('types', \App\Http\Controllers\Admin\TicketTypeController::class)->names('types');
         });
 
         // ── Gift Cards ─────────────────────────────────────

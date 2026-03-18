@@ -17,7 +17,10 @@ class GateTicketController extends Controller
 
     public function index(): View
     {
-        $ticketTypes = TicketType::where('is_active', true)->orderBy('price')->get();
+        $ticketTypes = TicketType::where('is_active', true)
+            ->orderBy('price')
+            ->get();
+
         return view('public.tickets.index', compact('ticketTypes'));
     }
 
@@ -33,25 +36,20 @@ class GateTicketController extends Controller
         ]);
 
         $ticket = $this->ticketService->purchaseTickets($request->all());
-
         session(['ticket_id' => $ticket->id]);
-
         return redirect()->route('tickets.payment', $ticket);
     }
 
     public function payment(GateTicket $ticket): View
     {
         abort_if(session('ticket_id') !== $ticket->id, 403);
-
         $ticket->load('ticketType');
-
         return view('public.tickets.payment', compact('ticket'));
     }
 
     public function payMpesa(GateTicket $ticket, Request $request): JsonResponse
     {
         abort_if(session('ticket_id') !== $ticket->id, 403);
-
         $request->validate(['phone' => 'required|string']);
 
         $response = $this->mpesaService->stkPush(
@@ -73,7 +71,6 @@ class GateTicketController extends Controller
                 'provider_reference' => $response['CheckoutRequestID'],
                 'provider_response'  => $response,
             ]);
-
             return response()->json(['success' => true]);
         }
 
@@ -86,13 +83,10 @@ class GateTicketController extends Controller
     public function confirmation(GateTicket $ticket): View
     {
         abort_if(
-            session('ticket_id') !== $ticket->id
-            && $ticket->status !== 'active',
+            session('ticket_id') !== $ticket->id && $ticket->status !== 'active',
             403
         );
-
         $ticket->load('ticketType');
-
         return view('public.tickets.confirmation', compact('ticket'));
     }
 }
