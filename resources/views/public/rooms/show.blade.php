@@ -236,7 +236,7 @@
     </section>
 
     {{-- Related rooms --}}
-    @if($related->count())
+    @if($relatedTypes->count())
     <section class="related-section">
         <div class="container">
             <div style="text-align:center;margin-bottom:2.5rem;">
@@ -244,7 +244,7 @@
                 <h2 style="font-family:'Playfair Display',serif;font-size:1.75rem;color:var(--forest);margin-top:0.5rem;">You May Also Like</h2>
             </div>
             <div class="related-grid">
-                @foreach($related as $rel)
+                @foreach($relatedTypes as $rel)
                 <a href="{{ route('rooms.show', $rel->slug) }}" class="related-card">
                     <div class="related-card-img">🛏</div>
                     <div class="related-card-body">
