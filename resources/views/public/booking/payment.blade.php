@@ -65,7 +65,16 @@
                 <div class="summary-row"><span class="lbl">Guests</span><span class="val">{{ $booking->adults }} adult{{ $booking->adults !== 1 ? 's' : '' }}{{ $booking->children ? ", {$booking->children} child".($booking->children!==1?'ren':'') : '' }}</span></div>
                 <div class="summary-row"><span class="lbl">Subtotal</span><span class="val">KES {{ number_format($booking->subtotal ?? $booking->total_amount) }}</span></div>
                 <div class="summary-row"><span class="lbl">VAT (16%)</span><span class="val">KES {{ number_format($booking->tax_amount ?? 0) }}</span></div>
-                <div class="summary-total"><span class="lbl">Total Due</span><span class="val">KES {{ number_format($booking->total_amount) }}</span></div>
+                <div class="summary-total"><span class="lbl">Grand Total</span><span class="val">KES {{ number_format($booking->total_amount) }}</span></div>
+                @if(($booking->payment_option ?? 'full') === 'deposit')
+                <div style="display:flex;justify-content:space-between;background:#fef9c3;border-radius:8px;padding:0.75rem 1rem;margin-top:0.75rem;">
+                    <span style="font-size:0.82rem;color:#92400e;">50% deposit due now</span>
+                    <span style="font-weight:700;color:#92400e;font-family:'Playfair Display',serif;font-size:1.1rem;">KES {{ number_format($booking->deposit_amount) }}</span>
+                </div>
+                <div style="font-size:0.75rem;color:#9ca3af;margin-top:0.4rem;text-align:right;">
+                    Balance KES {{ number_format($booking->total_amount - $booking->deposit_amount) }} payable on arrival
+                </div>
+                @endif
                 <div class="ref-badge">Ref: {{ $booking->booking_ref }}</div>
             </div>
 
@@ -77,7 +86,13 @@
                     <label>M-Pesa Phone Number</label>
                     <input type="tel" id="mpesaPhone" placeholder="0712 345 678" value="{{ $booking->guest->phone }}">
                 </div>
-                <button class="btn-pay" id="payBtn" onclick="initiatePay()">Pay KES {{ number_format($booking->total_amount) }}</button>
+                <button class="btn-pay" id="payBtn" onclick="initiatePay()">
+                    @if(($booking->payment_option ?? 'full') === 'deposit')
+                        Pay Deposit · KES {{ number_format($booking->deposit_amount) }}
+                    @else
+                        Pay KES {{ number_format($booking->total_amount) }}
+                    @endif
+                </button>
                 <div class="status-msg pending" id="statusPending">⏳ STK push sent to your phone. Enter your M-Pesa PIN to complete payment…</div>
                 <div class="status-msg success" id="statusSuccess">✅ Payment confirmed! Redirecting to your booking confirmation…</div>
                 <div class="status-msg error" id="statusError"></div>
@@ -99,7 +114,9 @@
 @endsection
 
 @push('scripts')
+@php $amountDue = ($booking->payment_option ?? 'full') === 'deposit' ? $booking->deposit_amount : $booking->total_amount; @endphp
 <script>
+const PAY_LABEL = '{{ ($booking->payment_option ?? "full") === "deposit" ? "Pay Deposit · KES ".number_format($amountDue) : "Pay KES ".number_format($amountDue) }}';
 async function initiatePay() {
     const phone = document.getElementById('mpesaPhone').value.trim();
     const btn   = document.getElementById('payBtn');
@@ -112,7 +129,7 @@ async function initiatePay() {
     });
     const data = await res.json();
     if (data.success) { btn.textContent = 'Waiting for payment…'; pollPayment(); }
-    else { showStatus('error', data.message||'Payment failed. Please try again.'); btn.disabled=false; btn.textContent='Pay KES {{ number_format($booking->total_amount) }}'; }
+    else { showStatus('error', data.message||'Payment failed. Please try again.'); btn.disabled=false; btn.textContent=PAY_LABEL; }
 }
 async function pollPayment() {
     for (let i=0;i<24;i++) {
@@ -120,7 +137,7 @@ async function pollPayment() {
         const res=await fetch('{{ route("booking.pay.mpesa.poll",$booking) }}');
         const data=await res.json();
         if(data.status==='completed'){ showStatus('success'); setTimeout(()=>window.location.href='{{ route("booking.confirmation",$booking) }}',1500); return; }
-        if(data.status==='failed'){ showStatus('error','Payment failed. Please try again.'); const btn=document.getElementById('payBtn'); btn.disabled=false; btn.textContent='Pay KES {{ number_format($booking->total_amount) }}'; return; }
+        if(data.status==='failed'){ showStatus('error','Payment failed. Please try again.'); const btn=document.getElementById('payBtn'); btn.disabled=false; btn.textContent=PAY_LABEL; return; }
     }
     showStatus('error','Payment timed out. If you completed the payment, contact us with reference: {{ $booking->booking_ref }}');
 }

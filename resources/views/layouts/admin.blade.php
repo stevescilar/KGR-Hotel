@@ -55,6 +55,7 @@
             @php
                 $nav = [
                     ['route' => 'admin.dashboard', 'icon' => '▦', 'label' => 'Dashboard', 'roles' => []],
+                    ['route' => 'admin.bookings.partial-payments', 'icon' => '💛', 'label' => 'Balance Due'],
                     ['route' => 'admin.bookings.index', 'icon' => '🛏', 'label' => 'Bookings',
                         'badge' => \App\Models\Booking::where('status','pending')->count(), 'roles' => []],
                     ['route' => 'admin.rooms.index', 'icon' => '🏠', 'label' => 'Rooms', 'roles' => []],

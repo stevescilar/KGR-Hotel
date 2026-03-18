@@ -35,12 +35,14 @@ Route::prefix('admin')
         Route::prefix('bookings')->name('bookings.')->group(function () {
             Route::get('/', [BookingController::class, 'index'])->name('index');
             Route::get('/create', [BookingController::class, 'create'])->name('create');
+            Route::get('/partial-payments', [BookingController::class, 'partialPayments'])->name('partial-payments');
             Route::get('/check-availability', [BookingController::class, 'checkAvailability'])->name('check-availability');
             Route::post('/', [BookingController::class, 'store'])->name('store');
             Route::get('/{booking}', [BookingController::class, 'show'])->name('show');
             Route::patch('/{booking}/check-in', [BookingController::class, 'checkIn'])->name('check-in');
             Route::patch('/{booking}/check-out', [BookingController::class, 'checkOut'])->name('check-out');
             Route::patch('/{booking}/cancel', [BookingController::class, 'cancel'])->name('cancel');
+            Route::patch('/{booking}/collect-balance', [BookingController::class, 'collectBalance'])->name('collect-balance');
         });
 
         // ── Rooms ──────────────────────────────────────────

@@ -22,6 +22,10 @@ Route::middleware('guest')->group(function () {
 });
 Route::post('/logout', [\App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
+// ── Guest Account Creation (post-booking) ─────────────────
+Route::get('/account/create/{token}',  [\App\Http\Controllers\GuestAccountController::class, 'create'])->name('account.create');
+Route::post('/account/create/{token}', [\App\Http\Controllers\GuestAccountController::class, 'store'])->name('account.create.store');
+
 // ── Home & Static Pages ────────────────────────────────────
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/rooms', [HomeController::class, 'rooms'])->name('rooms');
